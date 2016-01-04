@@ -1,0 +1,5 @@
+Created by Avery Karlin, Matthew Lerner-Brecher, Haoran Xiao
+
+The project is a Google Calendar type software, allowing groups to edit a calendar together, with reminders under specific time or file-oriented conditions, for all of the users it is specified to, allowing for personal and group calendars.
+
+The project will largely be used as a line-interface client, able to type in designated commands to view or edit the calendar, able to be seen in list form, possibly creating a GUI for a designated month if possible.
