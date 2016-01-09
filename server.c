@@ -1,4 +1,4 @@
-#include "fserver.h"
+#include "server.h"
 
 void error(int r) {
 	if(r < 0) {
