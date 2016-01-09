@@ -1,5 +1,23 @@
 Created by Avery Karlin, Matthew Lerner-Brecher, Haoran Xiao
 
-The project is a Google Calendar type software, allowing groups to edit a calendar together, with reminders under specific time or file-oriented conditions, for all of the users it is specified to, allowing for personal and group calendars.
+Ciscolendar
 
-The project will largely be used as a line-interface client, able to type in designated commands to view or edit the calendar, able to be seen in list form, possibly creating a GUI for a designated month if possible.
+The Project:
+
+The project is a Google Calendar type software. A main server will store a calendar along with all of the information on it (e.g. birthdays, holidays, important reminders). Users can create/access either individual or group calendars and there will be a login system to determine which calendars the user can access. Users can add special dates to the calendar and add reminders which will be sent to the user at a certain time or when some event happens. We'll likely also add permissions to the group calendars (i.e. certain users can only access/change certain things).
+
+Features Implemented:
+
+We'll definitely use a lot of working with files and accessing information about them because we need those tools to store the calendar information and form the permission system. We will also use pipes, networking, and some signals and processes techniques to form the server-client system.
+
+Intial Layout/Jobs:
+Haoran - General Calendar funcationality and reminder system
+Matthew - Login, permission system, and file-related features
+Avery - Server-Client System
+
+Vague Timeline:
+By 1/14: General Calendar functionality, login system, some permissions, and server-side functionality complte
+By 1/21: Reminder System, permission system, and client-side functionality complete
+By 1/25: All features combined and incorporated
+Onwards: Extra features?
+
