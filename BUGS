@@ -1,0 +1,2 @@
+1. Message of server connection to client private pipe doesn't go through properly
+2. Number of client changes after connection
