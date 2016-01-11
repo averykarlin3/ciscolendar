@@ -12,13 +12,13 @@ int connect(int* from) {
 	sprintf(private, "%i", getpid());
 	*from = open(wkp, O_WRONLY);
 	error(*from);
-	printf("<C> Connected to WKP\n");
+	//printf("<C> Connected to WKP\n");
 	int test = write(*from, private, sizeof(private));
 	error(test);
 	test = mkfifo(private, 0666);
 	error(test);
 	int to = open(private, O_RDONLY);
-	printf("<C> Connected to Private\n");
+	//printf("<C> Connected to Private\n");
 	error(to);
 	char buffer[100];
 	test = read(to, buffer, sizeof(buffer));	

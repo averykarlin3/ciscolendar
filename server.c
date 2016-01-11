@@ -12,20 +12,20 @@ int connect(int* to) {
 	error(test);
 	*to = open(wkp, O_RDONLY);
 	error(*to);
-	printf("<S> Connected to WKP\n");
+	//printf("<S> Connected to WKP\n");
 	char buffer[100];
 	test = read(*to, buffer, sizeof(buffer)); 
 	error(test);
-	printf("<C> Connected to WKP\n");
-	printf("Private Pipe Name: %s\n", buffer);
+	printf("<C %i Connected\n", *to);
+	//printf("Private Pipe Name: %s\n", buffer);
 	remove(wkp);
 	int parent = fork();
 	error(parent);
 	if(!parent) {
 		int from = open(buffer, O_WRONLY);
 		error(from);
-		printf("<S> Connected to Private\n");
-		char* confirm = "<S> Connected to Private\n";
+		//printf("<S> Connected to Private\n");
+		char* confirm = "<S> Connected\n";
 		test = write(from, confirm, sizeof(confirm));
 		error(test);
 		return from;
