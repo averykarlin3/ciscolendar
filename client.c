@@ -1,4 +1,4 @@
-#include "server.h"
+#include "client.h"
 
 void error(int r) {
 	if(r < 0) {
@@ -27,26 +27,32 @@ int connect(int* from) {
 	return to;
 }
 
+int process(int from, int to, char input[]) {
+	if(!strcmp(input, "exit"))
+		return 0;
+	printf("<C> %s\n", input);
+	int test = write(from, input, sizeof(input));
+	error(test);
+	char buffer[100];
+	test = read(to, buffer, sizeof(buffer));
+	error(test);
+	printf("<S> %s\n", buffer);
+	return 1;
+}
+
 int main() {
 	int from, to;
 	to = connect(&from);
-	while(1) {
+	int ret = 1;
+	while(ret) {
 		char input[100];
-		printf("Insert Data: ");
+		printf("$ ");
 		char* testa = fgets(input, sizeof(input), stdin);
 		*strchr(input, '\n') = 0;
-		if (testa == NULL) {
+		if(testa == NULL) {
 			error(-1);
 		}
-		if(!strcmp(input, "exit"))
-			break;
-		printf("Sending: %s\n", input);
-		int test = write(from, input, sizeof(input));
-		error(test);
-		char buffer[100];
-		test = read(to, buffer, sizeof(buffer));
-		error(test);
-		printf("Processed: %s\n", buffer);
+		ret = process(from, to, input);
 	}
 	close(from);
 	close(to);

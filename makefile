@@ -3,7 +3,7 @@ make: server.o client.o
 	gcc client.o -o client
 server.o: server.c server.h
 	gcc server.c -c
-client.o: client.c server.h
+client.o: client.c client.h
 	gcc client.c -c
 runc: client
 	./client

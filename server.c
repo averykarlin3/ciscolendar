@@ -39,18 +39,10 @@ void process(int from, int to) {
 	char buffer[100];
 	int test = read(to, buffer, sizeof(buffer));
 	error(test);
-	printf("Recieved: %s\n", buffer);
-	int len = strlen(buffer);
-	if (buffer[len - 1] == '.') {
-		buffer[len - 1] = '\0';
-	}
-	else{
-		buffer[len] = '.';
-		buffer[len + 1] = '\0';
-	}
+	printf("<C %i> %s\n", from, buffer);
+	//Processing here
 	test = write(from, buffer, sizeof(buffer));
 	error(test);
-	printf("Sending: %s\n", buffer);
 }
 
 static void sighandler(int signo) {
