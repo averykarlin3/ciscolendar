@@ -9,3 +9,8 @@ runc: client
 	./client
 runs: server
 	./server
+clean:
+	rm client
+	rm server
+	rm client.o
+	rm server.o
