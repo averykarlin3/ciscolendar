@@ -100,11 +100,11 @@ int main() {
 	printf("day: %s\n",day(timeinfo->tm_wday));
 
 	display_day();
-	/*
-	int ymd[3] = {1998,5,20};
-	int day = dayoweek(ymd);
-	printf("day of week: %d\n",day);
-	*/
+	
+	// int ymd[3] = {2016,0,0};
+	// int day = dayoweek(ymd);
+	// printf("day of week: %d\n",day);
+	
 
 
 	return 0;
