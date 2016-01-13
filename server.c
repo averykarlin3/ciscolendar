@@ -35,6 +35,17 @@ int connect(int* to) {
 	}
 }
 
+void readData(char* user, int flags) {
+	char* path;
+	sprintf(path, "%s/%s", "./data", user);
+	int data = open(path, flags, 0666);  
+	error(data);
+}
+
+void confirmData(char* user, int from, int to) {
+	
+}
+
 void process(int from, int to) {
 	char buffer[100];
 	int test = read(to, buffer, sizeof(buffer));
@@ -59,6 +70,8 @@ int main() {
 	while(from == -1) {
 		from = connect(&to);
 	}
+	//Get user
+	confirmData(user, from, to);
 	while(1) {
 		process(from, to);
 	}
