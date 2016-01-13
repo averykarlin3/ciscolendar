@@ -54,9 +54,8 @@ struct tm * get_month() {  //get month from user
 	scanf("%s",input);
 	struct tm * timeinfo = today();
 	int i;
-	for (i = 0; input[i]; i++) {
+	for (i = 0; input[i]; i++) 
 		input[i] = tolower(input[i]);
-	}
 	if (strcmp(input,"this")) {
 		char * copy = input;
 		if (strchr(input,'/')) {
@@ -93,9 +92,8 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 	col = timeinfo->tm_wday;
 	//opens all event files
 	while (timeinfo->tm_mon == month) {
-		if (timeinfo->tm_wday < col) { // moves to next row in calendar
+		if (timeinfo->tm_wday < col) // moves to next row in calendar
 			row++;
-		}
 		col = timeinfo->tm_wday;
 		calendar[row][col] = timeinfo->tm_mday;
 
@@ -103,9 +101,8 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 		//if (a certain date is in any of the files) {
 		//	event[row][col]++;Civilization that knows about 
 		//}
-		if (ptoday->tm_year == timeinfo->tm_year && ptoday->tm_mon == timeinfo->tm_mon && ptoday->tm_mday == timeinfo->tm_mday) {
+		if (ptoday->tm_year == timeinfo->tm_year && ptoday->tm_mon == timeinfo->tm_mon && ptoday->tm_mday == timeinfo->tm_mday)
 			event[row][col]+=2; //today
-		}
 		timeinfo->tm_mday++;
 		mktime(timeinfo);
 	}
@@ -113,28 +110,22 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 	for (row = 0; row < 6; row ++) {
 		printf("\t");
 		for (col = 0; col < 7; col++) { //calendar
-			if (calendar[row][col]) {
+			if (calendar[row][col])
 				printf("%d",calendar[row][col]);
-			}
 			printf("\t");
 		}
 		printf("\n\t");
 		for (col = 0; col < 7; col++) { //events
-			if (event[row][col] == 3) {
+			if (event[row][col] == 3)
 				printf("@ !!");
-			}
-			else if (event[row][col] == 2) {
+			else if (event[row][col] == 2)
 				printf("@");
-			}
-			else if (event[row][col] == 1) {
+			else if (event[row][col] == 1)
 				printf("!!");
-			}
 			printf("\t");
 		}
 		printf("\n");
 	}
-
-	//pulls reminder stuff
 }
 
 struct tm * get_day() {  //gets day from user
@@ -161,9 +152,8 @@ struct tm * get_day() {  //gets day from user
 			timeinfo->tm_mon = atoi(month) - 1;
 			count--;
 		}
-		if (count == 0) {
+		if (count == 0)
 			timeinfo->tm_mday = atoi(copy);
-		}
 	}
 	if (mktime(timeinfo) == -1) {
 		printf("Invalid time.\n");
@@ -178,7 +168,8 @@ void display_day(struct tm * timeinfo) {  //prints out day calendar
 	printf("\t%s %d\n",month(timeinfo->tm_mon),timeinfo->tm_year+1900);
 	printf("\t   %d\n",timeinfo->tm_mday);
 	printf("\t%s\n\n",day(timeinfo->tm_wday));
-
+	//read from files
+	//finds date in file
 	//pulls reminder stuff
 }
 
