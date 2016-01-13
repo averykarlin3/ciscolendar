@@ -14,11 +14,10 @@ struct tm * today() { //gets today's date
 	time(&rawtime);
 	timeinfo = localtime(&rawtime);
 	timeinfo->tm_isdst = -1;  //daylight saving
-	struct tm * copy = timeinfo;
-	return copy;
+	return timeinfo;
 }
 
-
+/*
 int dayoweek(int * ymd) { //test stuff...?
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -37,6 +36,7 @@ int dayoweek(int * ymd) { //test stuff...?
 	printf("day: %d\n",timeinfo->tm_wday);
 	return timeinfo->tm_wday;
 }
+*/
 
 char * day(int i) {
 	char * pool[7] = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
@@ -106,11 +106,6 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 		if (ptoday->tm_year == timeinfo->tm_year && ptoday->tm_mon == timeinfo->tm_mon && ptoday->tm_mday == timeinfo->tm_mday) {
 			event[row][col]+=2; //today
 		}
-
-		if (timeinfo->tm_mday == 31) {
-			printf("31!!\n");
-		}
-
 		timeinfo->tm_mday++;
 		mktime(timeinfo);
 	}
