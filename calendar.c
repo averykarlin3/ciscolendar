@@ -1,12 +1,8 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <time.h>
-#include <ctype.h>
+#include "calendar.h"
+
+void pstruct(struct tm * timeinfo) {
+	printf("\nyear: %d\nmonth: %d\nday :%d\nwday: %d\nyday: %d\ndst: %d\n",timeinfo->tm_year,timeinfo->tm_mon,timeinfo->tm_mday,timeinfo->tm_wday,timeinfo->tm_yday,timeinfo->tm_isdst);
+}
 
 struct tm * today() { //gets today's date
 	time_t rawtime;
@@ -14,29 +10,9 @@ struct tm * today() { //gets today's date
 	time(&rawtime);
 	timeinfo = localtime(&rawtime);
 	timeinfo->tm_isdst = -1;  //daylight saving
+	//pstruct(timeinfo);
 	return timeinfo;
 }
-
-/*
-int dayoweek(int * ymd) { //test stuff...?
-	time_t rawtime;
-	struct tm * timeinfo;
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	timeinfo->tm_year = ymd[0] - 1900;
-	timeinfo->tm_mon = ymd[1] - 1;
-	timeinfo->tm_mday = ymd[2];
-	timeinfo->tm_isdst = -1;  //daylight saving
-	printf("ymd[2]: %d\n",ymd[2]);
-	printf("date: %d\n",timeinfo->tm_mday);
-	mktime(timeinfo);
-	printf("year: %d\n",timeinfo->tm_year+1900);
-	printf("month: %d\n",timeinfo->tm_mon+1);
-	printf("date: %d\n",timeinfo->tm_mday);
-	printf("day: %d\n",timeinfo->tm_wday);
-	return timeinfo->tm_wday;
-}
-*/
 
 char * day(int i) {
 	char * pool[7] = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
@@ -48,11 +24,84 @@ char * month(int i) {
 	return pool[i];
 }
 
-struct tm * get_month() {  //get month from user
+int month_choice(struct tm * timeinfo) {
+	//pstruct(timeinfo);
+	printf("Things to do...(Input a number)\n");
+	char * pool[8] = {"Go to today's calendar","Go to another month","Go to a day","Add reminder","Remove reminder","Connect to server","Switch user","Exit"};
+	int size = 8;
+	int i;
+	for (i = 0; i < size; i++) {
+		printf("%d. %s\n",i,pool[i]);
+	}
+	int input;
+	scanf("%d",&input);
+	printf("\n\n");
+	if (input < 0 || input >= size) {
+		printf("Invalid input.\n");
+		return 1;
+	}
+	if (input == 0) {
+		//pstruct(timeinfo);
+		timeinfo = today();
+		//pstruct(timeinfo);
+		return 0;
+	}
+	if (input == 1) {
+		//pstruct(timeinfo);
+		timeinfo = get_month(timeinfo);
+		//pstruct(timeinfo);
+		return 1;
+	}
+	if (input == 2) {
+		//pstruct(timeinfo);
+		timeinfo = get_day(timeinfo);
+		//pstruct(timeinfo);
+		return 0;
+	}
+	return 0;	
+}
+
+int day_choice(struct tm * timeinfo) {
+	//pstruct(timeinfo);
+	printf("Things to do...(Input a number)\n");
+	char * pool[8] = {"Go to month calendar","Go to another day","Go to another month","Add today's reminder", "Remove today's reminder","Connect to server", "Switch user","Exit"};
+	int size = 8;
+	int i;
+	for (i = 0; i < size; i++) {
+		printf("%d. %s\n",i,pool[i]);
+	}
+	int input;
+	scanf("%d",&input);
+	printf("\n\n");
+	if (input < 0 || input >= size) {
+		printf("Invalid input.\n");
+		return 0;
+	}
+	if (input == 0) {
+		//pstruct(timeinfo);
+		return 1;
+	}
+	if (input == 1) {
+		//pstruct(timeinfo);
+		timeinfo = get_day(timeinfo);
+		//pstruct(timeinfo);
+		return 0;
+	}
+	if (input == 2) {
+		//pstruct(timeinfo);
+		timeinfo = get_month(timeinfo);
+		//pstruct(timeinfo);
+		return 1;
+	}
+	return 1;
+}
+
+
+struct tm * get_month(struct tm * timeinfo) {  //get month from user
+	//pstruct(timeinfo);
 	printf("Input the month (type 'this' for this month, month(mm), or yyyy/mm\n");
 	char input[50];
 	scanf("%s",input);
-	struct tm * timeinfo = today();
 	int i;
 	for (i = 0; input[i]; i++) 
 		input[i] = tolower(input[i]);
@@ -63,25 +112,37 @@ struct tm * get_month() {  //get month from user
 			timeinfo->tm_year = atoi(year) - 1900;
 		}
 		timeinfo->tm_mon = atoi(copy) - 1;
+		//pstruct(timeinfo);
+	}
+	else {
+		timeinfo = today();
 	}
 	timeinfo->tm_mday = 1;
-	if (mktime(timeinfo) == -1) {
-		printf("Invalid time.\n");
-		return;
-	}
+	//pstruct(timeinfo);
+	mktime(timeinfo);
+	//pstruct(timeinfo);
 	return timeinfo;
 }
 
-void display_month(struct tm * oldcopy) {  //prints out month calendar
-	struct tm newcopy = *oldcopy;
-	struct tm * timeinfo = &newcopy; //makes a local copy of oldcopy
+struct tm * display_month(struct tm * timeinfo) {  //prints out month calendar
+	//pstruct(timeinfo);
 	printf("\t\t\t    %s %d\n\n",month(timeinfo->tm_mon),timeinfo->tm_year+1900);
 	int month = timeinfo->tm_mon;
 	int calendar[6][7];
 	int event[6][7];
 	int row;
 	int col;
-	struct tm * ptoday = today(); //this affects timeinfo if it isnt a local copy
+	int temp_year = timeinfo->tm_year;
+	timeinfo = today();
+	//pstruct(timeinfo);
+	int today_year = timeinfo->tm_year;
+	int today_mon = timeinfo->tm_mon;
+	int today_day = timeinfo->tm_mday;
+	timeinfo->tm_year = temp_year;
+	timeinfo->tm_mon = month;
+	timeinfo->tm_mday = 1;
+	mktime(timeinfo);
+
 	for (row = 0; row < 6; row++) {
 		for (col = 0; col < 7; col++) {
 			calendar[row][col] = 0;
@@ -101,11 +162,12 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 		//if (a certain date is in any of the files) {
 		//	event[row][col]++;Civilization that knows about 
 		//}
-		if (ptoday->tm_year == timeinfo->tm_year && ptoday->tm_mon == timeinfo->tm_mon && ptoday->tm_mday == timeinfo->tm_mday)
+		if (today_year == timeinfo->tm_year && today_mon == timeinfo->tm_mon && today_day == timeinfo->tm_mday)
 			event[row][col]+=2; //today
 		timeinfo->tm_mday++;
 		mktime(timeinfo);
 	}
+	//pstruct(timeinfo);
 	printf("\tS\tM\tT\tW\tR\tF\tS\n");
 	for (row = 0; row < 6; row ++) {
 		printf("\t");
@@ -126,9 +188,17 @@ void display_month(struct tm * oldcopy) {  //prints out month calendar
 		}
 		printf("\n");
 	}
+	//pstruct(timeinfo);
+	timeinfo->tm_mon--;
+	timeinfo->tm_mday = 1;
+	//pstruct(timeinfo);
+	mktime(timeinfo);
+	//pstruct(timeinfo);
+	return timeinfo;
 }
 
-struct tm * get_day() {  //gets day from user
+struct tm * get_day(struct tm * timeinfo) {  //gets day from user
+	//pstruct(timeinfo);
 	printf("Input the date (type 'today', date(dd), mm/dd, or yyyy/mm/dd)\n");
 	char input[50];
 	scanf("%s",input);
@@ -139,7 +209,6 @@ struct tm * get_day() {  //gets day from user
 		if (input[i] == '/')
 			count++;
 	}
-	struct tm * timeinfo = today();
 	if (strcmp(input,"today")) {
 		char * copy = input;
 		if (count == 2) {
@@ -155,19 +224,23 @@ struct tm * get_day() {  //gets day from user
 		if (count == 0)
 			timeinfo->tm_mday = atoi(copy);
 	}
-	if (mktime(timeinfo) == -1) {
-		printf("Invalid time.\n");
-		return;
+	else {
+		timeinfo = today();
 	}
+	//pstruct(timeinfo);
+	mktime(timeinfo);
+	//pstruct(timeinfo);
 	return timeinfo;
 }
 
 
 
-void display_day(struct tm * timeinfo) {  //prints out day calendar
+struct tm * display_day(struct tm * timeinfo) {  //prints out day calendar
+	//pstruct(timeinfo);
 	printf("\t%s %d\n",month(timeinfo->tm_mon),timeinfo->tm_year+1900);
 	printf("\t   %d\n",timeinfo->tm_mday);
 	printf("\t%s\n\n",day(timeinfo->tm_wday));
+	return timeinfo;
 	//read from files
 	//finds date in file
 	//pulls reminder stuff
@@ -175,21 +248,29 @@ void display_day(struct tm * timeinfo) {  //prints out day calendar
 
 int main() {
 
-	printf("It's TIME for the Ciscolendar\n");
+	printf("It's TIME for the Ciscolendar!!\n");
 	struct tm * timeinfo = today();
-	printf("year: %d\n",timeinfo->tm_year+1900);
-	printf("month: %s\n",month(timeinfo->tm_mon));
-	printf("date: %d\n",timeinfo->tm_mday);
-	printf("day: %s\n",day(timeinfo->tm_wday));
-
-	display_month(get_month());
-	display_day(get_day());
+	//pstruct(timeinfo);
+	int mode = 0; //0 for day calendar, 1 for month calendar
+	while (1) {
+		if (mode) { //month calendar
+			//pstruct(timeinfo);
+			timeinfo->tm_mday = 1;
+			mktime(timeinfo);
+			//pstruct(timeinfo);
+			timeinfo = display_month(timeinfo);
+			//pstruct(timeinfo);
+			mode = month_choice(timeinfo);
+			//pstruct(timeinfo);
+		}
+		else { //day calendar
+			//pstruct(timeinfo);
+			timeinfo = display_day(timeinfo);
+			//pstruct(timeinfo);
+			mode = day_choice(timeinfo);
+			//pstruct(timeinfo);
+		}
+	}
 	
-	// int ymd[3] = {2016,0,0};
-	// int day = dayoweek(ymd);
-	// printf("day of week: %d\n",day);
-	
-
-
 	return 0;
 }
