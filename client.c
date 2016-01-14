@@ -52,12 +52,17 @@ void confirmData(char* user, int socket) {
 	test = read(socket, check, sizeof(int));
 	error(test);
 	char ndata[(int) check];
-	if(check > 0) {
+	if(check > 0) { //More recent server file
 		test = read(socket, ndata, check);
 		error(test);
 		close(data);
 		int data = openData(user, O_RDWR | O_TRUNC);
 		write(data, ndata, check);
+		test = lseek(data, 0, SEEK_SET);
+		error(test);
+		time_t now = time(NULL);
+		char* nows = asctime(&now);
+		write(data, nows, sizeof(nows);
 	}
 	else if(check == -1){
 		//More recent client file 
