@@ -7,7 +7,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 void error(int r);
-int connect(int* from);
-int process(int from, int to, char input[]);
+int process(int socket, char input[]);

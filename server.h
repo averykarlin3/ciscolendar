@@ -7,7 +7,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 void error(int r);
-int connect(int* to);
-void process(int from, int to);
+void process(int socket);

@@ -8,25 +8,16 @@ void error(int r) {
 	}
 }
 
-int connect(int* from) {
-	char* wkp = "connect";
-	char private[100];
-	sprintf(private, "%i", getpid());
-	*from = open(wkp, O_WRONLY);
-	error(*from);
-	//printf("<C> Connected to WKP\n");
-	int test = write(*from, private, sizeof(private));
-	error(test);
-	test = mkfifo(private, 0666);
-	error(test);
-	int to = open(private, O_RDONLY);
-	//printf("<C> Connected to Private\n");
-	error(to);
-	char buffer[100];
-	test = read(to, buffer, sizeof(buffer));	
-	error(test);
-	remove(private);
-	return to;
+int sock() {
+	int id = socket(AF_INET, SOCK_STREAM, 0);
+	error(id);
+	struct sockaddr_in serv;
+	serv.sin_family = AF_INET;
+	serv.sin_port = htons(1701);
+	inet_aton("65.78.20.209", &(serv.sin_addr));
+	bind(id, (struct sockaddr*) &serv, sizeof(serv));
+	connect(id, (struct sockaddr*) &serv, sizeof(serv));
+	return id;
 }
 
 int openData(char* user, int flags) {
@@ -37,32 +28,32 @@ int openData(char* user, int flags) {
 	return data;
 }
 
-int process(int from, int to, char input[]) {
+int process(int socket, char* input) {
 	if(!strcmp(input, "exit"))
 		return 0;
 	printf("<C> %s\n", input);
-	int test = write(from, input, sizeof(input));
+	int test = write(socket, input, sizeof(input));
 	error(test);
 	char buffer[100];
-	test = read(to, buffer, sizeof(buffer));
+	test = read(socket, buffer, sizeof(buffer));
 	error(test);
 	printf("<S> %s\n", buffer);
 	return 1;
 }
 
-void confirmData(char* user, int from, int to) {
+void confirmData(char* user, int socket) {
 	int data = openData(user, O_RDWR | O_CREAT);
 	char buffer[DTS];
-	test = read(data, buffer, DTS);
+	int test = read(data, buffer, DTS);
 	error(test);
-	test = write(from, buffer, DTS);
+	test = write(socket, buffer, DTS);
 	error(test);
 	char check[sizeof(int)];
-	test = read(to, check, sizeof(int));
+	test = read(socket, check, sizeof(int));
 	error(test);
-	char ndata[check];
+	char ndata[(int) check];
 	if(check > 0) {
-		test = read(to, ndata, check);
+		test = read(socket, ndata, check);
 		error(test);
 		close(data);
 		int data = openData(user, O_RDWR | O_TRUNC);
@@ -74,10 +65,10 @@ void confirmData(char* user, int from, int to) {
 }
 
 int main() {
-	int from, to;
 	//Set user
-	to = connect(&from);
-	confirmData(char* user, from, to);
+	char* user;
+	int socket = sock();
+	confirmData(user, socket);
 	int ret = 1;
 	while(ret) {
 		char input[100];
@@ -87,9 +78,8 @@ int main() {
 		if(testa == NULL) {
 			error(-1);
 		}
-		ret = process(from, to, input);
+		ret = process(socket, input);
 	}
-	close(from);
-	close(to);
+	close(socket);
 	return 0;
 }

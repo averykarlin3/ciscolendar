@@ -6,29 +6,19 @@ void error(int r) {
 	}
 }
 
-int connect(int* to) {
-	char* wkp = "connect";
-	int test = mkfifo(wkp, 0666);
-	error(test);
-	*to = open(wkp, O_RDONLY);
-	error(*to);
-	//printf("<S> Connected to WKP\n");
-	char buffer[100];
-	test = read(*to, buffer, sizeof(buffer)); 
-	error(test);
-	printf("<C %i Connected\n", *to);
-	//printf("Private Pipe Name: %s\n", buffer);
-	remove(wkp);
+int sock() {
+	int id = socket(AF_INET, SOCK_STREAM, 0);
+	error(id);
+	struct sockaddr_in serv;
+	serv.sin_family = AF_INET;
+	serv.sin_port = htons(1701);
+	serv.sin_addr.s_addr = INADDR_ANY;
+	bind(id, (struct sockaddr*)& serv, sizeof(serv));
+	listen(id, 1);
 	int parent = fork();
-	error(parent);
 	if(!parent) {
-		int from = open(buffer, O_WRONLY);
-		error(from);
-		//printf("<S> Connected to Private\n");
-		char* confirm = "<S> Connected\n";
-		test = write(from, confirm, sizeof(confirm));
-		error(test);
-		return from;
+		int client = accept(id, NULL, NULL);
+		return client;
 	}
 	else {
 		return -1;
@@ -42,17 +32,17 @@ void readData(char* user, int flags) {
 	error(data);
 }
 
-void confirmData(char* user, int from, int to) {
+void confirmData(char* user, int socket) {
 	
 }
 
-void process(int from, int to) {
+void process(int socket) {
 	char buffer[100];
-	int test = read(to, buffer, sizeof(buffer));
+	int test = read(socket, buffer, sizeof(buffer));
 	error(test);
-	printf("<C %i> %s\n", from, buffer);
+	printf("<C %i> %s\n", socket, buffer);
 	//Processing here
-	test = write(from, buffer, sizeof(buffer));
+	test = write(socket, buffer, sizeof(buffer));
 	error(test);
 }
 
@@ -65,15 +55,15 @@ static void sighandler(int signo) {
 
 int main() {
 	signal(SIGINT, sighandler);
-	int from = -1;
-	int to;
-	while(from == -1) {
-		from = connect(&to);
+	int socket;
+	while(socket == -1) {
+		socket = sock();
 	}
 	//Get user
-	confirmData(user, from, to);
+	char* user;
+	confirmData(user, socket);
 	while(1) {
-		process(from, to);
+		process(socket);
 	}
 	return 0;
 }
