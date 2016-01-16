@@ -1,6 +1,6 @@
 #include "client.h"
 
-#define DTS 26
+#define DTS sizeof(time_t)
 
 void error(int r) {
 	if(r < 0) {
@@ -31,9 +31,8 @@ int openData(char* user, int flags) {
 	else { //Account for new computer
 		data = open(path, O_CREAT | flags, 0666);
 		error(data);
-		time_t start = 0;
-		char* starts = asctime(&start);
-		write(data, starts, sizeof(starts));
+		char start[sizeof(time_t)] = 0;
+		write(data, start, sizeof(starts));
 	}
 	return data;
 }
@@ -61,8 +60,8 @@ void confirmData(char* user, int socket) {
 	char check[sizeof(int)];
 	test = read(socket, check, sizeof(int));
 	error(test);
-	char ndata[(int) check];
 	if(check > 0) { //More recent server file
+		char ndata[(int) check];
 		test = read(socket, ndata, check);
 		error(test);
 		close(data);
@@ -81,7 +80,8 @@ void confirmData(char* user, int socket) {
 		test = lseek(data, 0, SEEK_SET);
 		error(test);
 		time_t now = time(NULL); //Update time first
-		char* nows = asctime(&now);
+		char nows[sizeof(time_t)];
+		sprintf(nows, "%i", now);
 		test = write(data, nows, sizeof(nows);
 		error(test);
 		char buffer[d.st_size];
@@ -90,6 +90,7 @@ void confirmData(char* user, int socket) {
 		test = write(socket, buffer, d.st_size);
 		error(test);
 	}
+	close(data);
 }
 
 int main() {

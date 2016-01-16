@@ -1,5 +1,7 @@
 #include "server.h"
 
+#define DTS sizeof(time_t)
+
 void error(int r) {
 	if(r < 0) {
 		printf("Error: %s\n", strerror(errno));
@@ -27,62 +29,63 @@ int sock() {
 
 int openData(char* user, int flags) {
 	char* path;
-	sprintf(path, "%s/%s", "./data", user);
+	sprintf(path, "%s/%s", "~/.data", user);
 	struct stat buffer;
 	int data;
 	if(!stat(path, &buffer)) {
-		data = open(path, flags, 0666);  
+		data = open(path, flags , 0666);
 		error(data);
 	}
-	else {
-		data = open(path, flags | O_CREAT, 0666);
+	else { //Account for new computer
+		data = open(path, O_CREAT | flags, 0666);
 		error(data);
-		time_t start = 0;
-		char* starts = asctime(&start);
-		write(data, starts, sizeof(starts));
+		char start[sizeof(time_t)] = 0;
+		write(data, start, sizeof(starts));
 	}
 	return data;
 }
 
-void confirmData(char* user, int socket) { //From client - modify for server
+void confirmData(char* user, int socket) {
 	int data = openData(user, O_RDWR | O_CREAT);
 	char buffer[DTS];
 	int test = read(data, buffer, DTS);
 	error(test);
-	test = write(socket, buffer, DTS);
+	char client[DTS];
+	test = read(socket, buffer, DTS);
 	error(test);
 	char check[sizeof(int)];
-	test = read(socket, check, sizeof(int));
-	error(test);
-	char ndata[(int) check];
-	if(check > 0) { //More recent server file
-		test = read(socket, ndata, check);
-		error(test);
-		close(data);
-		int data = openData(user, O_RDWR | O_TRUNC);
-		test = write(data, ndata, check);
-		error(test);
-	}
-	else if(check == -1){
-		//More recent client file 
+	if(atoi(buffer) > atoi(client)) {
 		struct stat d;
-		stat(user, &d);
-		char* size;
-		sprintf(size, "%i", d.st_size);
-		test = write(socket, size, sizeof(size));
+		char* path;
+		sprintf(path, "%s/%s", "~/.data", user);
+		stat(path, d);
+		check = d.st_size;
+	}
+	else {
+		check = -1;
+	}
+	test = write(socket, check, sizeof(int));
+	error(test);
+	if(check > 0) { //More recent server file
+		time_t now = time(NULL);
+		char nows[sizeof(time_t)];
+		sprintf(nows, "%i", now);
+		test = write(data, nows, sizeof(nows);
 		error(test);
 		test = lseek(data, 0, SEEK_SET);
 		error(test);
-		time_t now = time(NULL); //Update time first
-		char* nows = asctime(&now);
-		test = write(data, nows, sizeof(nows));
+		char ndata[(int) check];
+		test = read(data, ndata, check);
 		error(test);
-		char buffer[d.st_size];
-		test = read(data, buffer, d.st_size);
+		test = write(socket, ndata, check);
 		error(test);
-		test = write(socket, buffer, d.st_size);
-		error(test);
+		close(data);
 	}
+	else if(check == -1){
+		//More recent client file 
+		
+	}
+	close(data);
 }
 
 void process(int socket) {

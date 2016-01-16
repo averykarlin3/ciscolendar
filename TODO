@@ -5,10 +5,9 @@ Calendar Info:
 	- Important Dates
 	
 For Avery:
-
--Add in case of lack of connection
--Add commented section
--Add confirm stuff to server
+	Network connection
+	Offline data
+	Updating Local file after network connection
 
 For Haoran:
 	Interface
