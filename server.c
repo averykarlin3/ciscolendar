@@ -83,7 +83,16 @@ void confirmData(char* user, int socket) {
 	}
 	else if(check == -1){
 		//More recent client file 
-		
+		char size[sizeof(int)];
+		test = read(socket, size, sizeof(size));
+		error(test);
+		char ndata[size];
+		test = read(socket, ndata, sizeof(ndata));
+		error(test);
+		close(data);
+		data = openData(user, O_RDWR | O_TRUNC);
+		test = write(data, ndata, sizeof(ndata));
+		error(test);
 	}
 	close(data);
 }
