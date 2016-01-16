@@ -9,6 +9,10 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <time.h>
 
 void error(int r);
 void process(int socket);
+void confirmData(char* user, int socket);
+int openData(char* user, int flags);
+int sock();
