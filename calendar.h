@@ -35,6 +35,16 @@ struct tm * display_day(struct tm * timeinfo);
 
 event * make_event(int year, int mon, int day, char * text);
 
-void day_event(struct tm * timeinfo);
+void write_event(event * new_event);
 
-void month_event(struct tm * timeinfo);
+int display_event(struct tm * timeinfo);
+
+void day_make_event(struct tm * timeinfo);
+
+void month_make_event(struct tm * timeinfo);
+
+void remove_event(event * old_event, int index);
+
+void day_remove_event(struct tm * timeinfo);
+
+void month_remove_event(struct tm * timeinfo);

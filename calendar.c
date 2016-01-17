@@ -23,7 +23,7 @@ char * month(int i) {
 	return pool[i];
 }
 
-int month_choice(struct tm * timeinfo) {
+int month_choice(struct tm * timeinfo) { 
 	printf("Things to do...(Input a number)\n");
 	char * pool[8] = {"Go to today","Go to another month","Go to a day","Add reminder","Remove reminder","Connect to server","Switch user","Exit"};
 	int size = 8;
@@ -51,7 +51,10 @@ int month_choice(struct tm * timeinfo) {
 		return 0;
 	}
 	if (input == 3) {
-		month_event(timeinfo);
+		month_make_event(timeinfo);
+	}
+	if (input == 4) {
+		month_remove_event(timeinfo);
 	}
 	return 0;	
 }
@@ -83,7 +86,11 @@ int day_choice(struct tm * timeinfo) {
 		return 1;
 	}
 	if (input == 3) {
-		day_event(timeinfo);
+		day_make_event(timeinfo);
+		return 0;
+	}
+	if (input == 4) {
+		day_remove_event(timeinfo);
 		return 0;
 	}
 	return 1;
@@ -160,8 +167,6 @@ struct tm * display_month(struct tm * timeinfo) {  //prints out month calendar
 			}
 			error = read(reading, read_event, sizeof(event));
 		}
-		//if (a certain date is in any of the files)
-		//	event[row][col]++;
 		if (today_year == timeinfo->tm_year && today_mon == timeinfo->tm_mon && today_day == timeinfo->tm_mday)
 			event_grid[row][col]+=2; //today
 		timeinfo->tm_mday++;
@@ -228,12 +233,24 @@ struct tm * get_day(struct tm * timeinfo) {  //gets day from user
 	return timeinfo;
 }
 
-
-
 struct tm * display_day(struct tm * timeinfo) {  //prints out day calendar
 	printf("\t%s %d\n",month(timeinfo->tm_mon),timeinfo->tm_year+1900);
 	printf("\t   %d\n",timeinfo->tm_mday);
 	printf("\t%s\n\n",day(timeinfo->tm_wday));
+	display_event(timeinfo);
+	return timeinfo;
+}
+
+event * make_event(int year, int mon, int day, char * text) {
+	event * output = (event *)malloc(sizeof(event));
+	output->year = year;
+	output->mon = mon;
+	output->day = day;
+	strcpy(output->text,text);
+	return output;
+}
+
+int display_event(struct tm * timeinfo) {
 	int reading = open("event.dat",O_CREAT|O_RDONLY,0666);
 	event * read_event = (event *)malloc(sizeof(event));
 	int error = read(reading, read_event ,sizeof(event));
@@ -250,19 +267,10 @@ struct tm * display_day(struct tm * timeinfo) {  //prints out day calendar
 	printf("\n");
 	close(reading);
 	free(read_event);
-	return timeinfo;
+	return i;
 }
 
-event * make_event(int year, int mon, int day, char * text) {
-	event * output = (event *)malloc(sizeof(event));
-	output->year = year;
-	output->mon = mon;
-	output->day = day;
-	strcpy(output->text,text);
-	return output;
-}
-
-void write_event(event * new_event) {
+void write_event(event * new_event) { 
 	int writing = open("event.dat",O_CREAT|O_RDONLY,0666);
 	int writing2 = open(".temp",O_CREAT|O_TRUNC|O_RDWR,0666);
 	event * read_event = (event *)malloc(sizeof(event));
@@ -294,18 +302,18 @@ void write_event(event * new_event) {
 	close(writing);
 	close(writing2);
 	free(read_event);
-	printf("Writing event done.\n");
 }
 
-void day_event(struct tm * timeinfo) {
+void day_make_event(struct tm * timeinfo) {
 	printf("New event for %d/%d/%d: ",timeinfo->tm_year+1900, timeinfo->tm_mon+1,timeinfo->tm_mday);
 	char input[100];
 	scanf("%s",input);
 	event * new_event = make_event(timeinfo->tm_year,timeinfo->tm_mon,timeinfo->tm_mday,input);
 	write_event(new_event);
+	printf("Writing event done.\n");
 }
 
-void month_event(struct tm * timeinfo) {
+void month_make_event(struct tm * timeinfo) {
 	printf("Choose a date: (input dd, mm/dd, or yyyy/mm/dd)\n");
 	char input[50];
 	scanf("%s",input);
@@ -328,12 +336,82 @@ void month_event(struct tm * timeinfo) {
 	}
 	if (count == 0)
 		timeinfo->tm_mday = atoi(copy);
-	printf("New event for %d/%d/%d: ",timeinfo->tm_year+1900, timeinfo->tm_mon+1,timeinfo->tm_mday);
-	char input2[100];
-	scanf("%s",input2);
-	event * new_event = make_event(timeinfo->tm_year,timeinfo->tm_mon,timeinfo->tm_mday,input);
-	write_event(new_event);
+	day_make_event(timeinfo);
 }
+
+void remove_event(event * old_event, int index) {
+	int writing = open("event.dat",O_CREAT|O_RDONLY,0666);
+	int writing2 = open(".temp",O_CREAT|O_TRUNC|O_RDWR,0666);
+	event * read_event = (event *)malloc(sizeof(event));
+	int error = read(writing, read_event ,sizeof(event));
+	int i = 0;
+	while (error) {
+		if (read_event->year == old_event->year && read_event->mon == old_event->mon && read_event->day == old_event->day && i++ == index) {
+		}
+		else {
+			write(writing2, read_event, sizeof(event));
+		}
+		error = read(writing,read_event,sizeof(event));
+	}
+	close(writing);
+	lseek(writing2,0,SEEK_SET);
+
+	writing = open("event.dat",O_CREAT|O_TRUNC|O_WRONLY);
+	error = read(writing2, read_event, sizeof(event));
+	while (error) {
+		write(writing, read_event, sizeof(event));
+		error = read(writing2, read_event, sizeof(event));
+	}
+	close(writing);
+	close(writing2);
+	free(read_event);
+}
+
+void day_remove_event(struct tm * timeinfo) {
+	printf("Which event on %d/%d/%d do you want to remove? (Input number)\n", timeinfo->tm_year+1900, timeinfo->tm_mon+1,timeinfo->tm_mday);
+	int total = display_event(timeinfo);
+	if (!total) {
+		printf("Oops, nothing to see here...\n\n\n");
+		return;
+	}
+	int input;
+	scanf("%d",&input);
+	printf("\n\n");
+	if (input < 0 || input >= total) {
+		printf("Invalid input.\n");
+		return;
+	}
+	event * old_event = make_event(timeinfo->tm_year,timeinfo->tm_mon,timeinfo->tm_mday,"0");
+	remove_event(old_event,input);
+	printf("Removing event done.\n\n\n");
+}
+
+void month_remove_event(struct tm * timeinfo) {
+	printf("Choose a date: (input dd, mm/dd, or yyyy/mm/dd)\n");
+	char input[50];
+	scanf("%s",input);
+	int i;
+	int count = 0;
+	for (i = 0; input[i]; i++) {
+		if (input[i] == '/')
+			count++;
+	}
+	char * copy = input;
+	if (count == 2) {
+		char * year = strsep(&copy,"/");
+		timeinfo->tm_year = atoi(year) - 1900;
+		count--;
+	}
+	if (count == 1) {
+		char * month = strsep(&copy,"/");
+		timeinfo->tm_mon = atoi(month) - 1;
+		count--;
+	}
+	if (count == 0)
+		timeinfo->tm_mday = atoi(copy);
+	day_remove_event(timeinfo);
+}
+
 
 int main() {
 	umask(0111);
