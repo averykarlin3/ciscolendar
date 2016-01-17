@@ -17,3 +17,4 @@ int process(int socket, char* input);
 void confirmData(char* user, int socket);
 int openData(char* user, int flags);
 int sock();
+int checkConnection();
