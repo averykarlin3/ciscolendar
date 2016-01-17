@@ -120,6 +120,7 @@ int main() {
 	}
 	else {
 		socket = -1;
+	}
 	int ret = 1;
 	while(ret) {
 		char input[100];
