@@ -15,7 +15,6 @@ int sock() {
 	serv.sin_family = AF_INET;
 	serv.sin_port = htons(1701);
 	inet_aton("65.78.20.209", &(serv.sin_addr));
-	bind(id, (struct sockaddr*) &serv, sizeof(serv));
 	connect(id, (struct sockaddr*) &serv, sizeof(serv));
 	return id;
 }
@@ -40,14 +39,19 @@ int openData(char* user, int flags) {
 int process(int socket, char* input) {
 	if(!strcmp(input, "exit"))
 		return 0;
-	printf("<C> %s\n", input);
-	int test = write(socket, input, sizeof(input));
-	error(test);
-	char buffer[100];
-	test = read(socket, buffer, sizeof(buffer));
-	error(test);
-	printf("<S> %s\n", buffer);
-	return 1;
+	if(socket != -1) {
+		printf("<C> %s\n", input);
+		int test = write(socket, input, sizeof(input));
+		error(test);
+		char buffer[100];
+		test = read(socket, buffer, sizeof(buffer));
+		error(test);
+		printf("<S> %s\n", buffer);
+		return 1;
+	}
+	else {
+		//Process Locally
+	}
 }
 
 void confirmData(char* user, int socket) {
@@ -93,11 +97,29 @@ void confirmData(char* user, int socket) {
 	close(data);
 }
 
+int checkConnection() {
+	int google = socket(AF_INET, SOCK_STREAM, 0);
+	error(google);
+	struct sockaddr_in g;
+	g.sin_family = AF_INET;
+	g.sin_port = htons(80);
+	inet_aton("https://www.google.com", &(g.sin_addr));
+	int test = connect(google, (struct sockaddr*) &g, sizeof(g));
+	close(google);
+	return test;
+}
+
 int main() {
 	//Set user
 	char* user;
-	int socket = sock();
-	confirmData(user, socket);
+	int conn = checkConnection();
+	int socket;
+	if(conn) {
+		socket = sock();
+		confirmData(user, socket);
+	}
+	else {
+		socket = -1;
 	int ret = 1;
 	while(ret) {
 		char input[100];
