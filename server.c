@@ -1,6 +1,6 @@
 #include "server.h"
 
-#define DTS sizeof(time_t)
+#define DTS sizeof(int) * 8
 
 void error(int r) {
 	if(r < 0) {
@@ -39,8 +39,8 @@ int openData(char* user, int flags) {
 	else { //Account for new computer
 		data = open(path, O_CREAT | flags, 0666);
 		error(data);
-		char start[sizeof(time_t)] = 0;
-		write(data, start, sizeof(starts));
+		char* start = "0\n";
+		write(data, start, sizeof(start));
 	}
 	return data;
 }
@@ -53,40 +53,40 @@ void confirmData(char* user, int socket) {
 	char client[DTS];
 	test = read(socket, buffer, DTS);
 	error(test);
-	char check[sizeof(int)];
+	char check[DTS];
 	if(atoi(buffer) > atoi(client)) {
 		struct stat d;
 		char* path;
 		sprintf(path, "%s/%s", "~/.data", user);
-		stat(path, d);
-		check = d.st_size;
+		stat(path, &d);
+		sprintf(check, "%i", d.st_size);
 	}
 	else {
-		check = -1;
+		sprintf(check, "%i", -1);
 	}
-	test = write(socket, check, sizeof(int));
+	test = write(socket, check, DTS);
 	error(test);
-	if(check > 0) { //More recent server file
+	if(atoi(check) > 0) { //More recent server file
 		time_t now = time(NULL);
-		char nows[sizeof(time_t)];
+		char nows[DTS];
 		sprintf(nows, "%i", now);
-		test = write(data, nows, sizeof(nows);
+		test = write(data, nows, sizeof(nows));
 		error(test);
 		test = lseek(data, 0, SEEK_SET);
 		error(test);
-		char ndata[(int) check];
-		test = read(data, ndata, check);
+		char ndata[atoi(check)];
+		test = read(data, ndata, atoi(check));
 		error(test);
-		test = write(socket, ndata, check);
+		test = write(socket, ndata, atoi(check));
 		error(test);
 		close(data);
 	}
-	else if(check == -1){
+	else if(atoi(check) == -1){
 		//More recent client file 
-		char size[sizeof(int)];
-		test = read(socket, size, sizeof(size));
+		char size[DTS];
+		test = read(socket, size, DTS);
 		error(test);
-		char ndata[size];
+		char ndata[atoi(size)];
 		test = read(socket, ndata, sizeof(ndata));
 		error(test);
 		close(data);

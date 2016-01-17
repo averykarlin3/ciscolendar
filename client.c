@@ -1,6 +1,6 @@
 #include "client.h"
 
-#define DTS sizeof(time_t)
+#define DTS sizeof(int) * 8
 
 void error(int r) {
 	if(r < 0) {
@@ -31,8 +31,8 @@ int openData(char* user, int flags) {
 	else { //Account for new computer
 		data = open(path, O_CREAT | flags, 0666);
 		error(data);
-		char start[sizeof(time_t)] = 0;
-		write(data, start, sizeof(starts));
+		char* start = "0\n";
+		write(data, start, sizeof(start));
 	}
 	return data;
 }
@@ -57,16 +57,16 @@ void confirmData(char* user, int socket) {
 	error(test);
 	test = write(socket, buffer, DTS);
 	error(test);
-	char check[sizeof(int)];
-	test = read(socket, check, sizeof(int));
+	char check[DTS];
+	test = read(socket, check, DTS);
 	error(test);
 	if(check > 0) { //More recent server file
-		char ndata[(int) check];
-		test = read(socket, ndata, check);
+		char ndata[atoi(check)];
+		test = read(socket, ndata, atoi(check));
 		error(test);
 		close(data);
 		int data = openData(user, O_RDWR | O_TRUNC);
-		test = write(data, ndata, check);
+		test = write(data, ndata, atoi(check));
 		error(test);
 	}
 	else if(check == -1){
@@ -80,9 +80,9 @@ void confirmData(char* user, int socket) {
 		test = lseek(data, 0, SEEK_SET);
 		error(test);
 		time_t now = time(NULL); //Update time first
-		char nows[sizeof(time_t)];
+		char nows[DTS];
 		sprintf(nows, "%i", now);
-		test = write(data, nows, sizeof(nows);
+		test = write(data, nows, sizeof(nows));
 		error(test);
 		char buffer[d.st_size];
 		test = read(data, buffer, d.st_size);

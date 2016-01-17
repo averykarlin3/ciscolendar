@@ -13,7 +13,7 @@
 #include <time.h>
 
 void error(int r);
-void process(int socket);
+int process(int socket, char* input);
 void confirmData(char* user, int socket);
 int openData(char* user, int flags);
 int sock();
