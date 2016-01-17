@@ -13,8 +13,9 @@
 #include <time.h>
 
 void error(int r);
-int process(int socket, char* input);
+int process(int socket, char* input, char* user);
 void confirmData(char* user, int socket);
 int openData(char* user, int flags);
 int sock();
 int checkConnection();
+void timeUp(int data);

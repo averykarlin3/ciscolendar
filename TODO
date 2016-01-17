@@ -14,3 +14,10 @@ For Haoran:
 	Interface
 	Reminder(?) system
 		Not sure how to make program remind user
+
+
+Note on Server-Client:
+	At start, reconciles system
+	Commands change only on server, and read only from server
+	Save command takes from server
+	Client is able to do some commands alone

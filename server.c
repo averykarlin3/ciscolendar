@@ -67,13 +67,7 @@ void confirmData(char* user, int socket) {
 	test = write(socket, check, DTS);
 	error(test);
 	if(atoi(check) > 0) { //More recent server file
-		time_t now = time(NULL);
-		char nows[DTS];
-		sprintf(nows, "%i", now);
-		test = write(data, nows, sizeof(nows));
-		error(test);
-		test = lseek(data, 0, SEEK_SET);
-		error(test);
+		timeUp(data);
 		char ndata[atoi(check)];
 		test = read(data, ndata, atoi(check));
 		error(test);
@@ -97,13 +91,25 @@ void confirmData(char* user, int socket) {
 	close(data);
 }
 
-void process(int socket) {
+void process(int socket, char* user) {
 	char buffer[100];
 	int test = read(socket, buffer, sizeof(buffer));
 	error(test);
 	printf("<C %i> %s\n", socket, buffer);
-	//Processing here
+	int data = openData(user, O_RDWR);
+	//Server processing here (including changing file)
+	timeUp(data);
 	test = write(socket, buffer, sizeof(buffer));
+	error(test);
+}
+
+void timeUp(int data) {
+	time_t now = time(NULL);
+	char nows[DTS];
+	sprintf(nows, "%i", now);
+	int test = write(data, nows, sizeof(nows));
+	error(test);
+	test = lseek(data, 0, SEEK_SET);
 	error(test);
 }
 
@@ -124,7 +130,7 @@ int main() {
 	char* user;
 	confirmData(user, socket);
 	while(1) {
-		process(socket);
+		process(socket, user);
 	}
 	return 0;
 }

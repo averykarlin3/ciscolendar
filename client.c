@@ -19,6 +19,16 @@ int sock() {
 	return id;
 }
 
+void timeUp(int data) {
+	time_t now = time(NULL);
+	char nows[DTS];
+	sprintf(nows, "%i", now);
+	int test = write(data, nows, sizeof(nows));
+	error(test);
+	test = lseek(data, 0, SEEK_SET);
+	error(test);
+}
+
 int openData(char* user, int flags) {
 	char* path = "~/.cal";
 	struct stat buffer;
@@ -36,21 +46,25 @@ int openData(char* user, int flags) {
 	return data;
 }
 
-int process(int socket, char* input) {
+int process(int socket, char* input, char* user) {
 	if(!strcmp(input, "exit"))
 		return 0;
 	if(socket != -1) {
-		printf("<C> %s\n", input);
+		if(!strcmp(input, "save"))
+			confirmData(user, socket);
+		printf("<C> %s\n", input); //Print command
 		int test = write(socket, input, sizeof(input));
 		error(test);
 		char buffer[100];
 		test = read(socket, buffer, sizeof(buffer));
 		error(test);
-		printf("<S> %s\n", buffer);
+		printf("<S> %s\n", buffer); //Print returned
 		return 1;
 	}
 	else {
-		//Process Locally
+		int data = openData(user, O_RDWR);
+		//Basic Client Processing (Including changing file)
+		timeUp(data);
 	}
 }
 
@@ -83,11 +97,7 @@ void confirmData(char* user, int socket) {
 		error(test);
 		test = lseek(data, 0, SEEK_SET);
 		error(test);
-		time_t now = time(NULL); //Update time first
-		char nows[DTS];
-		sprintf(nows, "%i", now);
-		test = write(data, nows, sizeof(nows));
-		error(test);
+		timeUp(data);
 		char buffer[d.st_size];
 		test = read(data, buffer, d.st_size);
 		error(test);
@@ -130,7 +140,7 @@ int main() {
 		if(testa == NULL) {
 			error(-1);
 		}
-		ret = process(socket, input);
+		ret = process(socket, input, user);
 	}
 	close(socket);
 	return 0;
