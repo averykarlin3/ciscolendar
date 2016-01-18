@@ -50,11 +50,11 @@ int process(int socket, char* input, char* user) {
 	if(!strcmp(input, "exit"))
 		return 0;
 	if(socket != -1) {
-		if(!strcmp(input, "save"))
-			confirmData(user, socket);
 		printf("<C> %s\n", input); //Print command
 		int test = write(socket, input, sizeof(input));
 		error(test);
+		if(!strcmp(input, "save"))
+			confirmData(user, socket);
 		char buffer[100];
 		test = read(socket, buffer, sizeof(buffer));
 		error(test);

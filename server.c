@@ -98,6 +98,8 @@ void process(int socket, char* user) {
 	printf("<C %i> %s\n", socket, buffer);
 	int data = openData(user, O_RDWR);
 	//Server processing here (including changing file)
+	if(!strcmp(buffer, "save"))
+		confirmData(user, socket);
 	timeUp(data);
 	test = write(socket, buffer, sizeof(buffer));
 	error(test);
