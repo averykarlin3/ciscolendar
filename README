@@ -1,0 +1,4 @@
+Make a process(char* user, char* command) - Takes a command, does whatever a calendar does
+
+On server: ~/.data/user
+On client: ~/.cal

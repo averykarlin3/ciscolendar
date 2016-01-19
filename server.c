@@ -128,7 +128,7 @@ int main() {
 	while(socket == -1) {
 		socket = sock();
 	}
-	//Get user
+	//Get user from client
 	char* user;
 	confirmData(user, socket);
 	while(1) {

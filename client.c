@@ -120,7 +120,7 @@ int checkConnection() {
 }
 
 int main() {
-	//Set user
+	//Set user from here
 	char* user;
 	int conn = checkConnection();
 	int socket;
