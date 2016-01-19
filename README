@@ -2,3 +2,18 @@ Make a process(char* user, char* command) - Takes a command, does whatever a cal
 
 On server: ~/.data/user
 On client: ~/.cal
+
+Note on Server-Client:
+	At start, reconciles system
+	Commands change only on server, and read only from server
+	Save command takes from server
+	Client is able to do some commands alone
+
+Look for the processing comment in client and server for the processing function
+Look for the user comment in the client and server for any user functionality
+
+DIfferences between client and server:
+
+Server able to store multiple users
+Client able to store single user
+Otherwise same functionality
