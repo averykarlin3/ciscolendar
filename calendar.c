@@ -25,8 +25,8 @@ char * month(int i) {
 
 int month_choice(struct tm * timeinfo) { 
 	printf("Things to do...(Input a number)\n");
-	char * pool[8] = {"Go to today","Go to another month","Go to a day","Add reminder","Remove reminder","Connect to server","Switch user","Exit"};
-	int size = 8;
+	char * pool[7] = {"Go to today","Go to another month","Go to a day","Add reminder","Remove reminder","Switch user", "Exit"};
+	int size = 7;
 	int i;
 	for (i = 0; i < size; i++) {
 		printf("%d. %s\n",i,pool[i]);
