@@ -9,6 +9,7 @@ void error(int r) {
 }
 
 int sock() {
+	printf("Test1");
 	int id = socket(AF_INET, SOCK_STREAM, 0);
 	error(id);
 	struct sockaddr_in serv;
@@ -123,8 +124,10 @@ static void sighandler(int signo) {
 }
 
 int main() {
+	printf("Test3");
 	signal(SIGINT, sighandler);
 	int socket;
+	printf("Test2");
 	while(socket == -1) {
 		socket = sock();
 	}

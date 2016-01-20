@@ -123,6 +123,7 @@ int main() {
 	//Set user from here
 	char* user;
 	int conn = checkConnection();
+	printf("Test1");
 	int socket;
 	if(conn) {
 		socket = sock();
