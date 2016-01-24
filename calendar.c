@@ -24,86 +24,91 @@ char * month(int i) {
 }
 
 int month_choice(struct tm * timeinfo) { 
-	printf("Things to do...(Input a number)\n");
-	char * pool[7] = {"Go to today","Go to another month","Go to a day","Add reminder","Remove reminder","Switch user", "Exit"};
-	int size = 7;
+	printf("Input command:");
+	char input[50];
+	fflush(stdin);
+	char * error = fgets(input,sizeof(input),stdin);
 	int i;
-	for (i = 0; i < size; i++) {
-		printf("%d. %s\n",i,pool[i]);
-	}
-	int input;
-	scanf("%d",&input);
+	for (i = 0; input[i]; i++) 
+		input[i] = tolower(input[i]);
+	char * command = input;
+	command = strsep(&command, "\n");
 	printf("\n\n");
-	if (input < 0 || input >= size) {
-		printf("Invalid input.\n");
-		return 1;
-	}
-	if (input == 0) {
+
+	if (!strcmp(command,"today")) {
 		timeinfo = today();
-		return 0;
 	}
-	if (input == 1) {
+	else if (!strcmp(command, "month")) {
 		timeinfo = get_month(timeinfo);
 		return 1;
 	}
-	if (input == 2) {
+	else if (!strcmp(command, "day")) {
 		timeinfo = get_day(timeinfo);
-		return 0;
 	}
-	if (input == 3) {
+	else if (!strcmp(command, "add")) {
 		month_make_event(timeinfo);
 	}
-	if (input == 4) {
+	else if (!strcmp(command, "remove")) {
 		month_remove_event(timeinfo);
 	}
-	return 0;	
+	else if (!strcmp(command, "exit")) {
+		exit(0);
+	}
+	else {
+		printf("Invalid input.\n\n");
+		return 1;
+	}
+	return 0;
 }
 
 int day_choice(struct tm * timeinfo) {
-	printf("Things to do...(Input a number)\n");
-	char * pool[8] = {"Go to month calendar","Go to another day","Go to another month","Add to this day's reminder", "Remove this day's reminder","Connect to server", "Switch user","Exit"};
-	int size = 8;
+	printf("Input command:");
+	char input[50];
+	fflush(stdin);
+	char * error = fgets(input,sizeof(input),stdin);
 	int i;
-	for (i = 0; i < size; i++) {
-		printf("%d. %s\n",i,pool[i]);
-	}
-	int input;
-	scanf("%d",&input);
+	for (i = 0; input[i]; i++) 
+		input[i] = tolower(input[i]);
+	char * command = input;
+	command = strsep(&command, "\n");
 	printf("\n\n");
-	if (input < 0 || input >= size) {
-		printf("Invalid input.\n");
-		return 0;
-	}
-	if (input == 0) {
+
+	if (!strcmp(command,"today")) {
 		return 1;
 	}
-	if (input == 1) {
-		timeinfo = get_day(timeinfo);
-		return 0;
-	}
-	if (input == 2) {
+	else if (!strcmp(command, "month")) {
 		timeinfo = get_month(timeinfo);
 		return 1;
 	}
-	if (input == 3) {
+	else if (!strcmp(command, "day")) {
+		timeinfo = get_day(timeinfo);
+	}
+	else if (!strcmp(command, "add")) {
 		day_make_event(timeinfo);
-		return 0;
 	}
-	if (input == 4) {
+	else if (!strcmp(command, "remove")) {
 		day_remove_event(timeinfo);
-		return 0;
 	}
-	return 1;
+	else if (!strcmp(command, "exit")) {
+		exit(0);
+	}
+	else {
+		printf("Invalid input.\n\n");
+	}
+	return 0;
 }
 
 
 struct tm * get_month(struct tm * timeinfo) {  //get month from user
 	printf("Input the month (type 'this' for this month, month(mm), or yyyy/mm\n");
-	char input[50];
-	scanf("%s",input);
+	char temp[50];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
 	int i;
-	for (i = 0; input[i]; i++) 
-		input[i] = tolower(input[i]);
+	for (i = 0; temp[i]; i++) 
+		temp[i] = tolower(temp[i]);
+	char * input = temp;
+	input = strsep(&input, "\n");
 	if (strcmp(input,"this")) {
 		char * copy = input;
 		if (strchr(input,'/')) {
@@ -202,15 +207,19 @@ struct tm * display_month(struct tm * timeinfo) {  //prints out month calendar
 
 struct tm * get_day(struct tm * timeinfo) {  //gets day from user
 	printf("Input the date (type 'today', date(dd), mm/dd, or yyyy/mm/dd)\n");
-	char input[50];
-	scanf("%s",input);
+	char temp[50];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
 	int i;
 	int count = 0;
-	for (i = 0; input[i]; i++) {
-		input[i] = tolower(input[i]);
-		if (input[i] == '/')
+	for (i = 0; temp[i]; i++) {
+		temp[i] = tolower(temp[i]);
+		if (temp[i] == '/')
 			count++;
 	}
+	char * input = temp;
+	input = strsep(&input, "\n");
+
 	if (strcmp(input,"today")) {
 		char * copy = input;
 		if (count == 2) {
@@ -306,8 +315,11 @@ void write_event(event * new_event) {
 
 void day_make_event(struct tm * timeinfo) {
 	printf("New event for %d/%d/%d: ",timeinfo->tm_year+1900, timeinfo->tm_mon+1,timeinfo->tm_mday);
-	char input[100];
-	scanf("%s",input);
+	char temp[100];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
+	char * input = temp;
+	input = strsep(&input, "\n");
 	event * new_event = make_event(timeinfo->tm_year,timeinfo->tm_mon,timeinfo->tm_mday,input);
 	write_event(new_event);
 	printf("Writing event done.\n");
@@ -315,14 +327,18 @@ void day_make_event(struct tm * timeinfo) {
 
 void month_make_event(struct tm * timeinfo) {
 	printf("Choose a date: (input dd, mm/dd, or yyyy/mm/dd)\n");
-	char input[50];
-	scanf("%s",input);
+	char temp[50];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
 	int i;
 	int count = 0;
-	for (i = 0; input[i]; i++) {
-		if (input[i] == '/')
+	for (i = 0; temp[i]; i++) {
+		temp[i] = tolower(temp[i]);
+		if (temp[i] == '/')
 			count++;
 	}
+	char * input = temp;
+	input = strsep(&input, "\n");
 	char * copy = input;
 	if (count == 2) {
 		char * year = strsep(&copy,"/");
@@ -374,9 +390,15 @@ void day_remove_event(struct tm * timeinfo) {
 		printf("Oops, nothing to see here...\n\n\n");
 		return;
 	}
-	int input;
-	scanf("%d",&input);
+
+	char temp[10];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
+	char * input_str = temp;
+	input_str = strsep(&input_str, "\n");
+	int input = atoi(input_str);
 	printf("\n\n");
+
 	if (input < 0 || input >= total) {
 		printf("Invalid input.\n");
 		return;
@@ -388,14 +410,20 @@ void day_remove_event(struct tm * timeinfo) {
 
 void month_remove_event(struct tm * timeinfo) {
 	printf("Choose a date: (input dd, mm/dd, or yyyy/mm/dd)\n");
-	char input[50];
-	scanf("%s",input);
+
+	char temp[50];
+	fflush(stdin);
+	char * error = fgets(temp,sizeof(temp),stdin);
 	int i;
 	int count = 0;
-	for (i = 0; input[i]; i++) {
-		if (input[i] == '/')
+	for (i = 0; temp[i]; i++) {
+		temp[i] = tolower(temp[i]);
+		if (temp[i] == '/')
 			count++;
 	}
+	char * input = temp;
+	input = strsep(&input, "\n");
+
 	char * copy = input;
 	if (count == 2) {
 		char * year = strsep(&copy,"/");
