@@ -19,7 +19,7 @@ int sock() {
  *Outputs: int client - The file descriptor of the client (-1 if the parent)
  *Function: Creates a socket to a client in a child process, returning -1 to the parent, and the client file descriptor to the child
 */
-	printf("Test1");
+	printf("Test1\n");
 	int id = socket(AF_INET, SOCK_STREAM, 0);
 	error(id);
 	struct sockaddr_in serv;
@@ -147,10 +147,10 @@ static void sighandler(int signo) {
 }
 
 int main() {
-	printf("Test3");
+	printf("Test3\n");
 	signal(SIGINT, sighandler);
-	int socket;
-	printf("Test2");
+	int socket = -1;
+	printf("Test2\n");
 	while(socket == -1) {
 		socket = sock();
 	}
