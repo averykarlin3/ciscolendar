@@ -65,6 +65,7 @@ int process(int socket, char* input, char* user) {
 		int data = openData(user, O_RDWR);
 		//Basic Client Processing (Including changing file)
 		timeUp(data);
+		return 1;
 	}
 }
 
