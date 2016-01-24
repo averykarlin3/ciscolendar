@@ -20,6 +20,7 @@ int sock() {
  *Function: Creates a socket to a client in a child process, returning -1 to the parent, and the client file descriptor to the child
 */
 	printf("Test1\n");
+	int from, to;
 	int id = socket(AF_INET, SOCK_STREAM, 0);
 	error(id);
 	struct sockaddr_in serv;
@@ -29,11 +30,17 @@ int sock() {
 	bind(id, (struct sockaddr*)& serv, sizeof(serv));
 	listen(id, 1);
 	int parent = fork();
-	if(!parent) {
+	if(!parent) {  
 		int client = accept(id, NULL, NULL);
+		from = open("parpause", O_WRONLY);
 		return client;
 	}
 	else {
+		int parpause = mkfifo("parpause", 0666);
+		to = open("parpause", O_RDONLY);
+		char buffer[100];
+		parpause = read(to, buffer, sizeof(buffer)); 
+		remove("parpause");
 		return -1;
 	}
 }
