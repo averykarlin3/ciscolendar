@@ -3,12 +3,22 @@
 #define DTS sizeof(int) * 8
 
 void error(int r) {
+/*
+ *Parameters: int r - The return value of a function that returns -1 if an error
+ *Outputs: NA
+ *Function: Takes a return value of a function, and prints an error message if it returns -1
+*/
 	if(r < 0) {
 		printf("Error: %s\n", strerror(errno));
 	}
 }
 
 int sock() {
+/*
+ *Parameters: NA
+ *Outputs: int client - The file descriptor of the client (-1 if the parent)
+ *Function: Creates a socket to a client in a child process, returning -1 to the parent, and the client file descriptor to the child
+*/
 	printf("Test1");
 	int id = socket(AF_INET, SOCK_STREAM, 0);
 	error(id);
@@ -29,6 +39,10 @@ int sock() {
 }
 
 int openData(char* user, int flags) {
+/*Inputs - char* user (Username), int flags (Flags used when opening the data file)
+ *Outputs - int data (File descriptor of the data file)
+ *Function - Opens the data file for the user, and returns the descriptor, creatin gthe file if it is not found
+*/
 	char* path;
 	sprintf(path, "%s/%s", "~/.data", user);
 	struct stat buffer;
@@ -47,6 +61,9 @@ int openData(char* user, int flags) {
 }
 
 void confirmData(char* user, int socket) {
+/*Input - int socket (Socket file descriptor), char* user (Username)
+ *Function - Checks if the data file for the user is more recently updated in the client or server, and copies the more recent to the server
+*/
 	int data = openData(user, O_RDWR | O_CREAT);
 	char buffer[DTS];
 	int test = read(data, buffer, DTS);
@@ -93,6 +110,9 @@ void confirmData(char* user, int socket) {
 }
 
 void process(int socket, char* user) {
+/*Inputs - int socket (socket file descriptor), char* user (username)
+ *Function - Reads any input from the client, processes it as necissary, and writes whatever needed to the client
+*/
 	char buffer[100];
 	int test = read(socket, buffer, sizeof(buffer));
 	error(test);
@@ -107,6 +127,9 @@ void process(int socket, char* user) {
 }
 
 void timeUp(int data) {
+/*Inputs - int data (File descriptor of the data file)
+ *Function - Updates the data file time at the top of the file, with the current time
+*/
 	time_t now = time(NULL);
 	char nows[DTS];
 	sprintf(nows, "%li", (long) now);
