@@ -60,7 +60,7 @@ void confirmData(char* user, int socket) {
 		char* path;
 		sprintf(path, "%s/%s", "~/.data", user);
 		stat(path, &d);
-		sprintf(check, "%i", d.st_size);
+		sprintf(check, "%lli", (long long) d.st_size);
 	}
 	else {
 		sprintf(check, "%i", -1);
@@ -109,7 +109,7 @@ void process(int socket, char* user) {
 void timeUp(int data) {
 	time_t now = time(NULL);
 	char nows[DTS];
-	sprintf(nows, "%i", now);
+	sprintf(nows, "%lli", (long long) now);
 	int test = write(data, nows, sizeof(nows));
 	error(test);
 	test = lseek(data, 0, SEEK_SET);
