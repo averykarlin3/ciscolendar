@@ -109,7 +109,7 @@ void process(int socket, char* user) {
 void timeUp(int data) {
 	time_t now = time(NULL);
 	char nows[DTS];
-	sprintf(nows, "%lli", (long long) now);
+	sprintf(nows, "%li", (long) now);
 	int test = write(data, nows, sizeof(nows));
 	error(test);
 	test = lseek(data, 0, SEEK_SET);

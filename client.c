@@ -5,7 +5,7 @@
 void error(int r) {
 	if(r < 0) {
 		printf("Error: %s\n", strerror(errno));
-	}
+	} 
 }
 
 int sock() {
@@ -22,7 +22,7 @@ int sock() {
 void timeUp(int data) {
 	time_t now = time(NULL);
 	char nows[DTS];
-	sprintf(nows, "%i", now);
+	sprintf(nows, "%li", (long) now);
 	int test = write(data, nows, sizeof(nows));
 	error(test);
 	test = lseek(data, 0, SEEK_SET);
@@ -92,7 +92,7 @@ void confirmData(char* user, int socket) {
 		struct stat d;
 		stat(user, &d);
 		char* size;
-		sprintf(size, "%i", d.st_size);
+		sprintf(size, "%lli", (long long) d.st_size);
 		test = write(socket, size, sizeof(size));
 		error(test);
 		test = lseek(data, 0, SEEK_SET);
