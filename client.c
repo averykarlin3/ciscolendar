@@ -78,7 +78,7 @@ void confirmData(char* user, int socket) {
 	char check[DTS];
 	test = read(socket, check, DTS);
 	error(test);
-	if(check > 0) { //More recent server file
+	if(atoi(check) > 0) { //More recent server file
 		char ndata[atoi(check)];
 		test = read(socket, ndata, atoi(check));
 		error(test);
@@ -87,7 +87,7 @@ void confirmData(char* user, int socket) {
 		test = write(data, ndata, atoi(check));
 		error(test);
 	}
-	else if(check == -1){
+	else if(atoi(check) == -1){
 		//More recent client file 
 		struct stat d;
 		stat(user, &d);
