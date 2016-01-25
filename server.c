@@ -156,8 +156,8 @@ static void sighandler(int signo) {
 
 int main() {
 	printf("Test3\n");
-	signal(SIGINT, sighandler);
 	int socket = -1;
+	signal(SIGINT, sighandler);
 	printf("Test2\n");
 	while(socket == -1) {
 		socket = sock();

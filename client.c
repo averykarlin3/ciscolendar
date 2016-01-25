@@ -13,7 +13,7 @@ void error(int r) {
 	} 
 }
 
-int sock() {
+int sock(char* ipadd) {
 /*
  *Parameters: NA
  *Outputs: int id - The file descriptor of the socket to the server
@@ -25,7 +25,7 @@ int sock() {
 	struct sockaddr_in serv;
 	serv.sin_family = AF_INET;
 	serv.sin_port = htons(1701);
-	inet_aton("127.0.0.1", &(serv.sin_addr));
+	inet_aton(ipadd, &(serv.sin_addr));
 	i = connect(id, (struct sockaddr*) &serv, sizeof(serv));
 	printf("<client> connect returned: %d\n", i);
 	return id;
@@ -151,14 +151,19 @@ int checkConnection() {
 }
 
 int main() {
-	//printf("Please enter the IP Address of the server you would like to connect to:");
-	//Set user from here
-	char* user;
+	int socket = -1;
 	int conn = checkConnection();
-	printf("Test1\n");
-	int socket;
-	if(conn) {
-		socket = sock();
+	char* user;
+	if (conn) {
+		while (socket == -1) {
+			printf("Please enter the IP Address of the server you would like to connect to:");
+			char temp[50];
+			fflush(stdin);
+			char * error = fgets(temp,sizeof(temp),stdin);
+			printf("Test1\n");
+			socket = sock(temp);
+			printf("Test1\n");
+		}
 		confirmData(user, socket);
 	}
 	else {
