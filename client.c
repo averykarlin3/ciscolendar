@@ -144,7 +144,7 @@ int checkConnection() {
 	struct sockaddr_in g;
 	g.sin_family = AF_INET;
 	g.sin_port = htons(80);
-	inet_aton("https://www.google.com", &(g.sin_addr));
+	inet_aton("74.125.224.72", &(g.sin_addr));
 	int test = connect(google, (struct sockaddr*) &g, sizeof(g));
 	close(google);
 	return ++test;
@@ -170,7 +170,7 @@ int signup(int socket) {
 	char buffer[16] = "signup";
 	int test = write(socket, buffer, 16);
 	char * error;
-	char input[100];
+	char input[128];
 	char* user = NULL;
 	char* pass = NULL;
 	while (!user) {
@@ -184,11 +184,15 @@ int signup(int socket) {
 			printf("\n");
 		}
 	}
+	strcpy(input, user);
+	test = write(socket, input, 128);
 	printf("Please enter a password: ");
 	fflush(stdin);
 	error = fgets(input,sizeof(input),stdin);
 	pass = input;
 	pass = strsep(&pass, "\n");
+	strcpy(input, pass);
+	test = write(socket, input, 128);
 	return 1;
 }
 

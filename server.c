@@ -167,6 +167,13 @@ int signup(int socket) {
 	/* Function: Communicates with the client to signup the user and create his/her files
 	   Output: Returns 0 upon failure, 1 upon success
 	*/
+	char* userText;
+	char buffer[128];
+	int test = read(socket, buffer, 128);
+	userText = buffer;
+	test = read(socket, buffer, 128);
+	int usrFile = open(userText, O_WRONLY | O_TRUNC | O_CREAT, 0744);
+	write(usrFile, buffer, 128);
 	return 1;
 }
 
