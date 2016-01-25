@@ -150,13 +150,6 @@ int checkConnection() {
 	return ++test;
 }
 
-int login(int socket) {
-	/* Function: Logs the user in and updates any necessary files
-	   Output: 1 if the login was successful, 0 if it was a failure
-	*/
-	return 1;
-}
-
 int alphaOnly(char* s) {
 	/* Output: Returns 1 if s only contains letters of the alphabet, 0 otherwise
 	*/
@@ -174,6 +167,8 @@ int signup(int socket) {
 	/* Function: Makes an account on the server for the user
 	   Output: 1 if the login was successful, 0 if it was a failure
 	*/
+	char buffer[16] = "signup";
+	int test = write(socket, buffer, 16);
 	char * error;
 	char input[100];
 	char* user = NULL;
@@ -194,6 +189,15 @@ int signup(int socket) {
 	error = fgets(input,sizeof(input),stdin);
 	pass = input;
 	pass = strsep(&pass, "\n");
+	return 1;
+}
+
+int login(int socket) {
+	/* Function: Logs the user in and updates any necessary files
+	   Output: 1 if the login was successful, 0 if it was a failure
+	*/
+	char buffer[16] = "login";
+	int test = write(socket, buffer, 16);
 	return 1;
 }
 
@@ -226,6 +230,8 @@ int main() {
 				success = signup(socket);
 			}
 			else if (!strcmp("exit\n", temp)){
+				char buffer[16] = "exit";
+				int test = write(socket, buffer, 16);
 				exit(0);
 			}
 			else{

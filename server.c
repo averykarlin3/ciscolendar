@@ -29,6 +29,7 @@ int sock() {
 	serv.sin_addr.s_addr = INADDR_ANY;
 	bind(id, (struct sockaddr*)& serv, sizeof(serv));
 	listen(id, 1);
+	printf("Test4\n");
 	int parent = fork();
 	if(!parent) {  
 		int client = accept(id, NULL, NULL);
@@ -42,6 +43,7 @@ int sock() {
 		char buffer[100];
 		parpause = read(to, buffer, sizeof(buffer)); 
 		remove("parpause");
+		printf("server escaped...\n");
 		return -1;
 	}
 }
@@ -154,19 +156,48 @@ static void sighandler(int signo) {
 	}
 }
 
+int login(int socket) {
+	/* Function: Communicates with the client to login the user and update his/her files
+	   Output: Returns 0 upon failure, 1 upon success
+	*/
+	return 1;
+}
+
+int signup(int socket) {
+	/* Function: Communicates with the client to signup the user and create his/her files
+	   Output: Returns 0 upon failure, 1 upon success
+	*/
+	return 1;
+}
+
 int main() {
 	printf("Test3\n");
 	int socket = -1;
 	signal(SIGINT, sighandler);
 	printf("Test2\n");
+	int test;
+	char buffer[16];
+	char* readText;
+	int cont = 1;
 	while(socket == -1) {
 		socket = sock();
 	}
 	//Get user from client
 	char* user;
-	confirmData(user, socket);
-	while(1) {
-		process(socket, user);
+	//confirmData(user, socket);
+	while(cont) {
+		test = read(socket, buffer, 16);
+		readText = buffer;
+		if (!strcmp(readText, "signup")) {
+			signup(socket);
+		}
+		else if (!strcmp(readText, "login")) {
+			login(socket);
+		}
+		else {
+			cont = 0;
+		}
+		//process(socket, user);
 	}
 	return 0;
 }

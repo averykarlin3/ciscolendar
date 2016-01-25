@@ -17,3 +17,5 @@ void confirmData(char* user, int socket);
 int openData(char* user, int flags);
 int sock();
 void timeUp(int data);
+int login(int socket);
+int signup(int socket);
