@@ -147,25 +147,96 @@ int checkConnection() {
 	inet_aton("https://www.google.com", &(g.sin_addr));
 	int test = connect(google, (struct sockaddr*) &g, sizeof(g));
 	close(google);
-	return test;
+	return ++test;
+}
+
+int login(int socket) {
+	/* Function: Logs the user in and updates any necessary files
+	   Output: 1 if the login was successful, 0 if it was a failure
+	*/
+	return 1;
+}
+
+int alphaOnly(char* s) {
+	/* Output: Returns 1 if s only contains letters of the alphabet, 0 otherwise
+	*/
+	int i = 0;
+	while (s[i]) {
+		if (!(((s[i]> 64) && (s[i] < 91)) || ((s[i] > 96) && (s[i] < 123)))) {
+			return 0;
+		}
+		i += 1;
+	}
+	return 1;
+}
+
+int signup(int socket) {
+	/* Function: Makes an account on the server for the user
+	   Output: 1 if the login was successful, 0 if it was a failure
+	*/
+	char * error;
+	char input[100];
+	char* user = NULL;
+	char* pass = NULL;
+	while (!user) {
+		printf("Please enter a username (only letters of the alphabet are allowed): ");
+		fflush(stdin);
+		error = fgets(input,sizeof(input),stdin);
+		user = input;
+		user = strsep(&user, "\n");
+		if (!alphaOnly(user)) {
+			user = NULL;
+			printf("\n");
+		}
+	}
+	printf("Please enter a password: ");
+	fflush(stdin);
+	error = fgets(input,sizeof(input),stdin);
+	pass = input;
+	pass = strsep(&pass, "\n");
+	return 1;
 }
 
 int main() {
 	int socket = -1;
 	int conn = checkConnection();
-	char* user;
+	char* user = NULL;
+	int success = 0;
+	char * error;
+	char temp[50];
 	if (conn) {
 		while (socket == -1) {
 			printf("Please enter the IP Address of the server you would like to connect to:");
-			char temp[50];
 			fflush(stdin);
-			char * error = fgets(temp,sizeof(temp),stdin);
+			error = fgets(temp,sizeof(temp),stdin);
 			printf("Test1\n");
 			socket = sock(temp);
 			printf("Test1\n");
+		}		
+		//confirmData(user, socket);
+		while (!success) { //While the user is not logged in
+			printf("Please enter whether you would like to login or signup:");
+			fflush(stdin);
+			error = fgets(temp,sizeof(temp),stdin);
+			printf("%s\n",temp);
+			if (!strcmp("login\n", temp)) {
+				success = login(socket);
+			}
+			else if (!strcmp("signup\n", temp)) {
+				success = signup(socket);
+			}
+			else if (!strcmp("exit\n", temp)){
+				exit(0);
+			}
+			else{
+				printf("Invalid Input\n");
+			}
 		}
-		confirmData(user, socket);
 	}
+	else{
+		printf("Not connected to the internet.\n");
+	}
+	/*
 	else {
 		socket = -1;
 	}
@@ -180,6 +251,7 @@ int main() {
 		}
 		ret = process(socket, input, user);
 	}
+	*/
 	close(socket);
 	return 0;
 }

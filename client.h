@@ -19,3 +19,6 @@ int openData(char* user, int flags);
 int sock(char* ipadd);
 int checkConnection();
 void timeUp(int data);
+int login(int socket);
+int signup(int socket);
+int alphaOnly(char* s);
