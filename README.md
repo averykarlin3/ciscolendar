@@ -1,7 +1,7 @@
 # Ciscolendar
 2nd System's Project
 
-
+whys there two readme files....
 
 calendar.c commands
 	"today" - switches between day and month calendar
