@@ -243,7 +243,6 @@ int main() {
 	else {
 		printf("\n \n \n");
 		runcal();
-		printf("what?\n");
 		int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
 		time_t now = time(NULL);
 		char nows[DTS];

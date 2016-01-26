@@ -19,7 +19,6 @@ int sock() {
  *Outputs: int client - The file descriptor of the client (-1 if the parent)
  *Function: Creates a socket to a client in a child process, returning -1 to the parent, and the client file descriptor to the child
 */
-	printf("Test1\n");
 	int from, to;
 	int id = socket(AF_INET, SOCK_STREAM, 0);
 	error(id);
@@ -29,7 +28,6 @@ int sock() {
 	serv.sin_addr.s_addr = INADDR_ANY;
 	bind(id, (struct sockaddr*)& serv, sizeof(serv));
 	listen(id, 1);
-	printf("Test4\n");
 	int parent = fork();
 	if(!parent) { 
 		printf("test5\n"); 
@@ -129,21 +127,15 @@ int login(int socket) {
 		sprintf(buffer, "1");
 		write(socket, buffer, sizeof(buffer));
 		datfil = open(username, O_RDONLY, 0744);
-		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
 		write(socket, textFil, sizeof(textFil));
 	}
 	else {
-		printf("%s\n", username);
 		sprintf(buffer, "0");
 		write(socket, buffer, sizeof(buffer));
-		printf("%s\n", username);
-		printf("Pause: ");
-		fflush(stdin);
-		char* error = fgets(buffer,sizeof(buffer),stdin);
 		read(socket, textFil, sizeof(textFil));
+		printf("%s\n", textFil);
 		datfil = open(username, O_WRONLY | O_TRUNC | O_CREAT, 0744);
-		printf("%i\n", datfil);
 		nullify(textFil, 65535);
 		write(datfil, textFil, sizeof(textFil));
 	}

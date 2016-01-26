@@ -2,6 +2,9 @@ Known Bugs:
 
 1. Sometimes there is an error in the client connecting to the server. I don’t think this is a specific result of our code, but rather just something that occasionally happens when attempting connections. Our code handles this by exiting and returning an error.
 
-2. The code does not handle connecting to an invalid IP address well.
+2. The server often needs to be restarted for additional client to connect to it and the server often has trouble connecting to a new client after the old one left.
 
-3. The server often needs to be restarted for additional client to connect to it and the server sometimes has trouble connecting to a new client after the old one left.
+3. Rarely, but occasionally, the client will randomly stop connecting to the server and restarting and even recompiling the code does help. Restarting the terminal fixes this.
+
+4. This is less of a bug and more a user-friendliness thing we did not implement: the code does not handle connecting to an invalid IP address well.
+
