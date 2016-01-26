@@ -191,12 +191,13 @@ int main() {
 	char * error;
 	char temp[50];
 	char input[100];
+	char* temps;
 	if (conn) {
 		printf("Would you like to skip straight to the calendar or update your files on the server? Type y for the calendar and any other text for the server: ");
 		fflush(stdin);
 		error = fgets(input,sizeof(input),stdin);
-		if (!strcmp(input,"y")) {
-			conn = -1;
+		if (!strcmp(input,"y") || !strcmp(input,"y\n")) {
+			conn = 0;
 		}
 	}
 	if (conn) {
