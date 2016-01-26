@@ -216,6 +216,7 @@ int signup(int socket) {
 	sprintf(nows, "%li", (long) now);
 	nullify(nows, DTS);
 	test = write(timeFil, nows, sizeof(nows));
+	close(timeFil);
 	return 1;
 }
 
@@ -280,6 +281,8 @@ int login(int socket) {
 		write(datfil, textFil, sizeof(textFil));
 		write(socket, textFil, sizeof(textFil));
 	}
+	close(fil);
+	close(datfil);
 	return 1;
 }
 
@@ -332,6 +335,7 @@ int main() {
 	sprintf(nows, "%li", (long) now);
 	nullify(nows, DTS);
 	int test = write(timeFil, nows, sizeof(nows));
+	close(timeFil);
 	/*
 	else {
 		socket = -1;

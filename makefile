@@ -1,4 +1,4 @@
-make: server.o client.o
+make: server.o client.o calendar.o
 	gcc server.o -o server
 	gcc client.o calendar.o -o client
 server.o: server.c server.h

@@ -217,7 +217,6 @@ int login(int socket) {
 
 	}
 	close(fil);
-	printf("We did it; We did it; Hooray!!!!!!\n");
 	read(socket, buffer, sizeof(buffer));
 	int servertim = atoi(buffstring);
 	int clienttim = atoi(buffer);
@@ -225,7 +224,6 @@ int login(int socket) {
 	char textFil[65535];
 	int datfil;
 	if (servertim > clienttim) {
-		printf("<S> - s\n");
 		sprintf(buffer, "1");
 		write(socket, buffer, sizeof(buffer));
 		datfil = open(username, O_RDONLY, 0744);
@@ -233,14 +231,13 @@ int login(int socket) {
 		write(socket, textFil, sizeof(textFil));
 	}
 	else {
-		printf("<S> - c\n");
 		sprintf(buffer, "0");
 		write(socket, buffer, sizeof(buffer));
 		read(socket, textFil, sizeof(textFil));
 		datfil = open(username, O_WRONLY | O_TRUNC | O_CREAT, 0744);
 		write(datfil, textFil, sizeof(textFil));
 	}
-	printf("server: %i\n client: %i\n", servertim, clienttim);
+	close(datfil);
 	return 1;
 }
 
@@ -271,10 +268,8 @@ int signup(int socket) {
 }
 
 int main() {
-	printf("Test3\n");
 	int socket = -1;
 	signal(SIGINT, sighandler);
-	printf("Test2\n");
 	int test;
 	char buffer[16];
 	char* readText;
