@@ -6,14 +6,32 @@ How to compile
 
 List of files
 	//more files
+	Makefile
+	README
+	BUGS
+	TODO
+	DESIGN
 	calendar.h
 	calendar.c
 
-Using ciscolendar
+Using Ciscolendar
+	//connect and login stuff
+	
+	In the calendar interface, the user can switch between day and month mode, 
+	navigate to different dates/months, and add/remove reminders.
+	
+		Here are the commands allowed:
+	
+		"today" - switches between day and month calendar 
+		"day" - views a chosen day's calendar 
+		"month" - views a chosen month's calendar 
+		"add" - add a reminder 
+		"remove" - remove a reminder 
+		"exit" - exit the program
+
 	
 
 ///////////////////
-Make a process(char* user, char* command) - Takes a command, does whatever a calendar does
 
 On server: ~/.data/user
 On client: ~/.cal
