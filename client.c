@@ -30,6 +30,10 @@ int sock(char* ipadd) {
 	printf("test2\n");
 	i = connect(id, (struct sockaddr*) &serv, sizeof(serv));
 	printf("<client> connect returned: %d\n", i);
+	error(i);
+	if (i == -1) {
+		exit(0);
+	}
 	return id;
 }
 
@@ -168,13 +172,16 @@ int login(int socket) {
 	char textFil[65535];
 	int datfil;
 	if (atoi(input) == 1) {
-		printf("<C> - here\n");
 		read(socket, textFil, sizeof(textFil));
+		nullify(textFil, 65535);
 		datfil = open("event.dat", O_WRONLY | O_TRUNC | O_CREAT, 0744);
+		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
 	}
-	else {
+	else {		
+		printf("<C> - here\n");
 		int datfil = open("event.dat", O_RDONLY, 0744);
+		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
 		write(socket, textFil, sizeof(textFil));
 	}
@@ -186,6 +193,9 @@ int login(int socket) {
 int main() {
 	int socket = -1;
 	int conn = checkConnection();
+	if (!conn) {
+		printf("Not connected to the internet. The program will not skip straight to the calendar portion. \n");
+	}
 	char* user = NULL;
 	int success = 0;
 	char * error;
@@ -193,7 +203,7 @@ int main() {
 	char input[100];
 	char* temps;
 	if (conn) {
-		printf("Would you like to skip straight to the calendar or update your files on the server? Type y for the calendar and any other text for the server: ");
+		printf("\n Would you like to access the calendar or the server? Type y for the calendar and any other text for the server: ");
 		fflush(stdin);
 		error = fgets(input,sizeof(input),stdin);
 		if (!strcmp(input,"y") || !strcmp(input,"y\n")) {
@@ -230,18 +240,18 @@ int main() {
 			}
 		}
 	}
-	else{
-		printf("Not connected to the internet. The program will not skip straight to the calendar portion. \n");
+	else {
+		printf("\n \n \n");
+		runcal();
+		printf("what?\n");
+		int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
+		time_t now = time(NULL);
+		char nows[DTS];
+		sprintf(nows, "%li", (long) now);
+		nullify(nows, DTS);
+		int test = write(timeFil, nows, sizeof(nows));
+		close(timeFil);
 	}
-	printf("\n \n \n Time to begin the Calendar!!!!! (If you want to update the server anymore, you must restart the client)\n \n \n");
-	runcal();
-	int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
-	time_t now = time(NULL);
-	char nows[DTS];
-	sprintf(nows, "%li", (long) now);
-	nullify(nows, DTS);
-	int test = write(timeFil, nows, sizeof(nows));
-	close(timeFil);
 	close(socket);
 	return 0;
 }

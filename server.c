@@ -86,13 +86,15 @@ int login(int socket) {
 	char buffer[128];
 	char bigbuff[256];
 	char* buffstring;
+	char usbuff[128];
 	char* username;
 	char* inpassword;
 	char* password;
+	char* usercpy;
 	while (!usrSuccess) {
-		test = read(socket, buffer, sizeof(buffer));
-		fil = open(buffer, O_RDONLY, 0744);
-		username = buffer;
+		test = read(socket, usbuff, sizeof(buffer));
+		fil = open(usbuff, O_RDONLY, 0744);
+		username = usbuff;
 		if (fil != -1) {
 			usrSuccess = 1;
 		}
@@ -127,14 +129,22 @@ int login(int socket) {
 		sprintf(buffer, "1");
 		write(socket, buffer, sizeof(buffer));
 		datfil = open(username, O_RDONLY, 0744);
+		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
 		write(socket, textFil, sizeof(textFil));
 	}
 	else {
+		printf("%s\n", username);
 		sprintf(buffer, "0");
 		write(socket, buffer, sizeof(buffer));
+		printf("%s\n", username);
+		printf("Pause: ");
+		fflush(stdin);
+		char* error = fgets(buffer,sizeof(buffer),stdin);
 		read(socket, textFil, sizeof(textFil));
 		datfil = open(username, O_WRONLY | O_TRUNC | O_CREAT, 0744);
+		printf("%i\n", datfil);
+		nullify(textFil, 65535);
 		write(datfil, textFil, sizeof(textFil));
 	}
 	close(datfil);
@@ -195,5 +205,7 @@ int main() {
 		}
 		//process(socket, user);
 	}
+	printf("%i\n", getppid());
+	printf("chlid left?\n");
 	return 0;
 }

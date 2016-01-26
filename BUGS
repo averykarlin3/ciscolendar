@@ -1,5 +1,7 @@
 Known Bugs:
 
-1. The server often needs to be restarted for additional client to connect to it and the server sometimes has trouble connecting to a new client after the old one left.
+1. Sometimes there is an error in the client connecting to the server. I don’t think this is a specific result of our code, but rather just something that occasionally happens when attempting connections. Our code handles this by exiting and returning an error.
 
-2. Occasionally, the code will start having trouble connecting to 217.0.0.1. (This only started very recently. It started occurring after one of the above errors; There was no change in code before it started happening.) 
+2. The code does not handle connecting to an invalid IP address well.
+
+3. The server often needs to be restarted for additional client to connect to it and the server sometimes has trouble connecting to a new client after the old one left.
