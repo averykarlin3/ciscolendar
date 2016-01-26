@@ -1,1 +1,5 @@
-1. (Unknown if still an issue) Number of client changes after connection
+Known Bugs:
+
+1. The server often needs to be restarted for additional client to connect to it and the server sometimes has trouble connecting to a new client after the old one left.
+
+2. Occasionally, the code will start having trouble connecting to 217.0.0.1. (This only started very recently. It started occurring after one of the above errors; There was no change in code before it started happening.) 
