@@ -27,6 +27,7 @@ int sock(char* ipadd) {
 	serv.sin_family = AF_INET;
 	serv.sin_port = htons(1701);
 	inet_aton(ipadd, &(serv.sin_addr));
+	printf("test2\n");
 	i = connect(id, (struct sockaddr*) &serv, sizeof(serv));
 	printf("<client> connect returned: %d\n", i);
 	return id;
@@ -189,18 +190,26 @@ int main() {
 	int success = 0;
 	char * error;
 	char temp[50];
+	char input[100];
+	if (conn) {
+		printf("Would you like to skip straight to the calendar or update your files on the server? Type y for the calendar and any other text for the server: ");
+		fflush(stdin);
+		error = fgets(input,sizeof(input),stdin);
+		if (!strcmp(input,"y")) {
+			conn = -1;
+		}
+	}
 	if (conn) {
 		while (socket == -1) {
-			printf("Please enter the IP Address of the server you would like to connect to:");
+			printf("Please enter the IP Address of the server you would like to connect to: ");
 			fflush(stdin);
 			error = fgets(temp,sizeof(temp),stdin);
 			printf("Test1\n");
 			socket = sock(temp);
 			printf("Test1\n");
 		}		
-		//confirmData(user, socket);
 		while (!success) { //While the user is not logged in
-			printf("Please enter whether you would like to login or signup:");
+			printf("Please enter whether you would like to login or signup: ");
 			fflush(stdin);
 			error = fgets(temp,sizeof(temp),stdin);
 			printf("%s\n",temp);
@@ -221,9 +230,9 @@ int main() {
 		}
 	}
 	else{
-		printf("Not connected to the internet.\n");
+		printf("Not connected to the internet. The program will not skip straight to the calendar portion. \n");
 	}
-	printf("Time to begin the Calendar!!!!! (If you want to update the server anymore, you must restart the client)\n");
+	printf("\n \n \n Time to begin the Calendar!!!!! (If you want to update the server anymore, you must restart the client)\n \n \n");
 	runcal();
 	int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
 	time_t now = time(NULL);
@@ -232,22 +241,6 @@ int main() {
 	nullify(nows, DTS);
 	int test = write(timeFil, nows, sizeof(nows));
 	close(timeFil);
-	/*
-	else {
-		socket = -1;
-	}
-	int ret = 1;
-	while(ret) {
-		char input[100];
-		printf("$ ");
-		char* testa = fgets(input, sizeof(input), stdin);
-		*strchr(input, '\n') = 0;
-		if(testa == NULL) {
-			error(-1);
-		}
-		ret = process(socket, input, user);
-	}
-	*/
 	close(socket);
 	return 0;
 }
