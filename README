@@ -1,4 +1,37 @@
-Make a process(char* user, char* command) - Takes a command, does whatever a calendar does
+Ciscolendar
+Group members: Avery Karlin, Matthew Lerner-Brecher, Haoran Xiao
+
+How to compile
+//instructions
+
+List of files
+	//more files
+	Makefile
+	README
+	BUGS
+	TODO
+	DESIGN
+	calendar.h
+	calendar.c
+
+Using Ciscolendar
+	//connect and login stuff
+	
+	In the calendar interface, the user can switch between day and month mode, 
+	navigate to different dates/months, and add/remove reminders.
+	
+		Here are the commands allowed:
+	
+		"today" - switches between day and month calendar 
+		"day" - views a chosen day's calendar 
+		"month" - views a chosen month's calendar 
+		"add" - add a reminder 
+		"remove" - remove a reminder 
+		"exit" - exit the program
+
+	
+
+///////////////////
 
 On server: ~/.data/user
 On client: ~/.cal
