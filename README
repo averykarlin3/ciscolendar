@@ -1,18 +1,27 @@
 Ciscolendar
 Group members: Avery Karlin, Matthew Lerner-Brecher, Haoran Xiao
 
-How to compile
-//instructions
+How to compile and run
+//instructions:
+	1. Run make to compile everything
+	2. make runs or ./server will run the server
+	3. make runc or ./client will run the client
 
 List of files
 	//more files
-	Makefile
+	makefile
 	README
 	BUGS
 	TODO
 	DESIGN
 	calendar.h
 	calendar.c
+	server.h
+	server.c
+	client.h
+	client.c
+	event.dat
+	timestamp
 
 Using Ciscolendar
 	//connect and login stuff
@@ -33,20 +42,26 @@ Using Ciscolendar
 
 ///////////////////
 
-On server: ~/.data/user
-On client: ~/.cal
+Server Time :D
 
-Note on Server-Client:
-	At start, reconciles system
-	Commands change only on server, and read only from server
-	Save command takes from server
-	Client is able to do some commands alone
+Background Info:
 
-Look for the processing comment in client and server for the processing function
-Look for the user comment in the client and server for any user functionality
+ 	Calendars are stored locally on the client's computer as event.dat
 
-DIfferences between client and server:
+ 	On the client's computer a file timestamp is also stored which contains when the calendar event.dat was last updated.
 
-Server able to store multiple users
-Client able to store single user
-Otherwise same functionality
+ 	For each user that has made an account there are two files on the server:
+	 	1. A file titled with the users name that contains the user's password and the last time the file was updated on the server.
+	 	2. A file title with the users name with a .dat extension that contains a copy of the user's 
+
+Instructions:
+	
+	When the program begins you will be prompted whether or not you want to skip straight to the Ciscolendar or access the server.
+
+	If you access the server you have three options: signup or login (or alternatively exit).
+
+	If you signup an account is made for you on the server and you select a username and password.
+
+	If you login, you will be prompted for your username and password. If you enter those correctly, your calendar is compared with the one on the server and the less recent one is replaced with the more recent one.
+
+	Once you have selected your prompt and completed the action, you go straight to the ciscolendar.
