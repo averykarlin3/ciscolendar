@@ -23,24 +23,6 @@ List of files
 	event.dat
 	timestamp
 
-Using Ciscolendar
-	//connect and login stuff
-	
-	In the calendar interface, the user can switch between day and month mode, 
-	navigate to different dates/months, and add/remove reminders.
-	
-		Here are the commands allowed:
-	
-		"today" - switches between day and month calendar 
-		"day" - views a chosen day's calendar 
-		"month" - views a chosen month's calendar 
-		"add" - add a reminder 
-		"remove" - remove a reminder 
-		"exit" - exit the program
-
-	
-
-///////////////////
 
 Server Time :D
 
@@ -58,10 +40,30 @@ Instructions:
 	
 	When the program begins you will be prompted whether or not you want to skip straight to the Ciscolendar or access the server.
 
-	If you access the server you have three options: signup or login (or alternatively exit).
+	Everytime you access the client you will have to choices: to run the calendar or access the server
 
-	If you signup an account is made for you on the server and you select a username and password.
+		If you access the server you have three options: signup or login (or alternatively exit).
 
-	If you login, you will be prompted for your username and password. If you enter those correctly, your calendar is compared with the one on the server and the less recent one is replaced with the more recent one.
+			If you signup an account is made for you on the server and you select a username and password.
 
-	Once you have selected your prompt and completed the action, you go straight to the ciscolendar.
+			If you login, you will be prompted for your username and password. If you enter those correctly, your calendar is compared with the one on the server and the less recent one is replaced with the more recent one.
+
+		In the calendar interface, the user can switch between day and month mode, navigate to different dates/months, and add/remove reminders.
+	
+			Here are the commands allowed:
+	
+				"today" - switches between day and month calendar 
+				"day" - views a chosen day's calendar 
+				"month" - views a chosen month's calendar 
+				"add" - add a reminder 
+				"remove" - remove a reminder 
+				"exit" - exit the program
+
+	
+Note: The server system can be fairly buggy. To be safe, if you quit and rerun the server program everytime you finish the client program, that fixes most of the bugs for the next run.
+
+
+
+
+
+
