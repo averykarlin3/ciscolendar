@@ -1,4 +1,5 @@
 #include "client.h"
+#include "calendar.h"
 
 #define DTS sizeof(int) * 8
 
@@ -261,7 +262,24 @@ int login(int socket) {
 			printf("Incorrect Password!!!\n");
 		}
 	}
-	printf("We did it; We did it; Hooray!!!!!!\n");
+	printf("The Login Was Correct. The two calendars are being reconciled.\n");
+	int fil = open("timestamp", O_RDONLY, 0744);
+	read(fil,input, sizeof(input));
+	write(socket, input, sizeof(input));
+	read(socket, input, sizeof(input));
+	char textFil[65535];
+	int datfil;
+	if (atoi(input) == 1) {
+		printf("<C> - here\n");
+		read(socket, textFil, sizeof(textFil));
+		datfil = open("event.dat", O_WRONLY | O_TRUNC | O_CREAT, 0744);
+		write(datfil, textFil, sizeof(textFil));
+	}
+	else {
+		int datfil = open("event.dat", O_RDONLY, 0744);
+		write(datfil, textFil, sizeof(textFil));
+		write(socket, textFil, sizeof(textFil));
+	}
 	return 1;
 }
 
@@ -306,6 +324,14 @@ int main() {
 	else{
 		printf("Not connected to the internet.\n");
 	}
+	printf("Time to begin the Calendar!!!!! (If you want to update the server anymore, you must restart the client)\n");
+	runcal();
+	int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
+	time_t now = time(NULL);
+	char nows[DTS];
+	sprintf(nows, "%li", (long) now);
+	nullify(nows, DTS);
+	int test = write(timeFil, nows, sizeof(nows));
 	/*
 	else {
 		socket = -1;

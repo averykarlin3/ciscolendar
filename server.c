@@ -149,6 +149,7 @@ void timeUp(int data) {
 	error(test);
 }
 
+
 static void sighandler(int signo) {
 	if(signo == SIGINT) {
 		close(socket);
@@ -199,20 +200,47 @@ int login(int socket) {
 		write(socket, buffer, sizeof(buffer));
 	}
 	while (!pasSuccess) {
+		lseek(fil, 0, SEEK_SET);
 		test = read(socket, buffer, 128);
-		printf("inpassword: %s\n", buffer);
 		inpassword = buffer;
 		read(fil, bigbuff, sizeof(bigbuff));
 		buffstring = bigbuff;
-		password = strsep(&buffstring, "\n"); //buffstring now contains the time
-		printf("password: %s\n", password);
+		password = strsep(&buffstring, "\n");
 		if (!strcmp(password, inpassword)) {
 			pasSuccess = 1;
 		}
 		sprintf(buffer, "%i", pasSuccess);
 		write(socket, buffer, sizeof(buffer));
+		lseek(fil, 128, SEEK_SET);
+		read(fil, bigbuff, sizeof(bigbuff));
+		buffstring = bigbuff;
+
 	}
+	close(fil);
 	printf("We did it; We did it; Hooray!!!!!!\n");
+	read(socket, buffer, sizeof(buffer));
+	int servertim = atoi(buffstring);
+	int clienttim = atoi(buffer);
+	strcat(username, ".dat");
+	char textFil[65535];
+	int datfil;
+	if (servertim > clienttim) {
+		printf("<S> - s\n");
+		sprintf(buffer, "1");
+		write(socket, buffer, sizeof(buffer));
+		datfil = open(username, O_RDONLY, 0744);
+		write(datfil, textFil, sizeof(textFil));
+		write(socket, textFil, sizeof(textFil));
+	}
+	else {
+		printf("<S> - c\n");
+		sprintf(buffer, "0");
+		write(socket, buffer, sizeof(buffer));
+		read(socket, textFil, sizeof(textFil));
+		datfil = open(username, O_WRONLY | O_TRUNC | O_CREAT, 0744);
+		write(datfil, textFil, sizeof(textFil));
+	}
+	printf("server: %i\n client: %i\n", servertim, clienttim);
 	return 1;
 }
 

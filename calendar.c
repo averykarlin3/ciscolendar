@@ -441,7 +441,7 @@ void month_remove_event(struct tm * timeinfo) {
 }
 
 
-int main() {
+int runcal() {
 	umask(0111);
 	printf("It's TIME for the Ciscolendar!!\n");
 	struct tm * timeinfo = today();

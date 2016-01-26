@@ -48,3 +48,5 @@ void remove_event(event * old_event, int index);
 void day_remove_event(struct tm * timeinfo);
 
 void month_remove_event(struct tm * timeinfo);
+
+int runcal();
