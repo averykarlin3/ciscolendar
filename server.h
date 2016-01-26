@@ -19,3 +19,4 @@ int sock();
 void timeUp(int data);
 int login(int socket);
 int signup(int socket);
+void nullify(char* s, int i);

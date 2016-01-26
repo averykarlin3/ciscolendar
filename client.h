@@ -22,3 +22,4 @@ void timeUp(int data);
 int login(int socket);
 int signup(int socket);
 int alphaOnly(char* s);
+void nullify(char* s, int i);

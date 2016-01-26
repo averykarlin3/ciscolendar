@@ -156,6 +156,24 @@ static void sighandler(int signo) {
 	}
 }
 
+void nullify(char* s, int i) {
+	/*Function: Of the first i chars, it sets all of the chars after the first null to null
+	*/
+	int j = 0;
+	int passed = 0;
+	while (j < i) {
+		if (passed) {
+			s[j] = '\0';
+		}
+		else {
+			if (s[j] == '\0') {
+				passed = 1;
+			}
+		}
+		j += 1;
+	}
+}
+
 int login(int socket) {
 	/* Function: Communicates with the client to login the user and update his/her files
 	   Output: Returns 0 upon failure, 1 upon success
@@ -167,13 +185,25 @@ int signup(int socket) {
 	/* Function: Communicates with the client to signup the user and create his/her files
 	   Output: Returns 0 upon failure, 1 upon success
 	*/
+	printf("<S> - Signed Up\n");
 	char* userText;
 	char buffer[128];
-	int test = read(socket, buffer, 128);
+	char buff[128];
+	int test = read(socket, buffer, sizeof(buffer));
 	userText = buffer;
-	test = read(socket, buffer, 128);
+	printf("%s\n", userText);
+	test = read(socket, buff, 128);
 	int usrFile = open(userText, O_WRONLY | O_TRUNC | O_CREAT, 0744);
-	write(usrFile, buffer, 128);
+	write(usrFile, buff, sizeof(buff));
+	time_t now = time(NULL);
+	char nows[DTS];
+	sprintf(nows, "%li", (long) now);
+	nullify(nows, DTS);
+	write(usrFile, nows, sizeof(nows));
+	close(usrFile);
+	strcat(userText,".dat");
+	usrFile = open(userText, O_WRONLY | O_TRUNC | O_CREAT, 0744);
+	close(usrFile);
 	return 1;
 }
 
@@ -197,6 +227,7 @@ int main() {
 		readText = buffer;
 		if (!strcmp(readText, "signup")) {
 			signup(socket);
+			cont = 0;
 		}
 		else if (!strcmp(readText, "login")) {
 			login(socket);

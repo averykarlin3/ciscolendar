@@ -163,6 +163,24 @@ int alphaOnly(char* s) {
 	return 1;
 }
 
+void nullify(char* s, int i) {
+	/*Function: Of the first i chars, it sets all of the chars after the first null to null
+	*/
+	int j = 0;
+	int passed = 0;
+	while (j < i) {
+		if (passed) {
+			s[j] = '\0';
+		}
+		else {
+			if (s[j] == '\0') {
+				passed = 1;
+			}
+		}
+		j += 1;
+	}
+}
+
 int signup(int socket) {
 	/* Function: Makes an account on the server for the user
 	   Output: 1 if the login was successful, 0 if it was a failure
@@ -184,15 +202,13 @@ int signup(int socket) {
 			printf("\n");
 		}
 	}
-	strcpy(input, user);
-	test = write(socket, input, 128);
+	test = write(socket, input, sizeof(input));
 	printf("Please enter a password: ");
 	fflush(stdin);
 	error = fgets(input,sizeof(input),stdin);
-	pass = input;
-	pass = strsep(&pass, "\n");
-	strcpy(input, pass);
+	nullify(input, 128);
 	test = write(socket, input, 128);
+	printf("Congratulations your account has been made!!!\n");
 	return 1;
 }
 
