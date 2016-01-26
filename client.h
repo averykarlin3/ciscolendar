@@ -13,12 +13,8 @@
 #include <time.h>
 
 void error(int r);
-int process(int socket, char* input, char* user);
-void confirmData(char* user, int socket);
-int openData(char* user, int flags);
 int sock(char* ipadd);
 int checkConnection();
-void timeUp(int data);
 int login(int socket);
 int signup(int socket);
 int alphaOnly(char* s);
