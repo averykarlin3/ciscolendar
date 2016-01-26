@@ -178,6 +178,41 @@ int login(int socket) {
 	/* Function: Communicates with the client to login the user and update his/her files
 	   Output: Returns 0 upon failure, 1 upon success
 	*/
+	printf("<S> - Logged In\n");
+	int usrSuccess = 0;
+	int pasSuccess = 0;
+	int test, fil;
+	char buffer[128];
+	char bigbuff[256];
+	char* buffstring;
+	char* username;
+	char* inpassword;
+	char* password;
+	while (!usrSuccess) {
+		test = read(socket, buffer, sizeof(buffer));
+		fil = open(buffer, O_RDONLY, 0744);
+		username = buffer;
+		if (fil != -1) {
+			usrSuccess = 1;
+		}
+		sprintf(buffer, "%i", usrSuccess);
+		write(socket, buffer, sizeof(buffer));
+	}
+	while (!pasSuccess) {
+		test = read(socket, buffer, 128);
+		printf("inpassword: %s\n", buffer);
+		inpassword = buffer;
+		read(fil, bigbuff, sizeof(bigbuff));
+		buffstring = bigbuff;
+		password = strsep(&buffstring, "\n"); //buffstring now contains the time
+		printf("password: %s\n", password);
+		if (!strcmp(password, inpassword)) {
+			pasSuccess = 1;
+		}
+		sprintf(buffer, "%i", pasSuccess);
+		write(socket, buffer, sizeof(buffer));
+	}
+	printf("We did it; We did it; Hooray!!!!!!\n");
 	return 1;
 }
 

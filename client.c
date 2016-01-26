@@ -209,6 +209,12 @@ int signup(int socket) {
 	nullify(input, 128);
 	test = write(socket, input, 128);
 	printf("Congratulations your account has been made!!!\n");
+	int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
+	time_t now = time(NULL);
+	char nows[DTS];
+	sprintf(nows, "%li", (long) now);
+	nullify(nows, DTS);
+	test = write(timeFil, nows, sizeof(nows));
 	return 1;
 }
 
@@ -216,8 +222,46 @@ int login(int socket) {
 	/* Function: Logs the user in and updates any necessary files
 	   Output: 1 if the login was successful, 0 if it was a failure
 	*/
+	int usrSuccess = 0;
+	int pasSuccess = 0;
+	char input[128];
 	char buffer[16] = "login";
+	char* error;
 	int test = write(socket, buffer, 16);
+	while (!usrSuccess) {
+		printf("What is your username: ");
+		fflush(stdin);
+		error = fgets(input,sizeof(input),stdin);
+		printf("username: %s\n", input);
+		if (input[strlen(input) - 1] == '\n') {
+			input[strlen(input) - 1] = '\0';
+		}
+		nullify(input, 128);
+		write(socket, input, 128);
+		read(socket, input, 128);
+		usrSuccess = atoi(input);
+		if (usrSuccess == 0) {
+			printf("Invalid Username!!!\n");
+		}
+	}
+	while (!pasSuccess) {
+		printf("What is your password: ");
+		fflush(stdin);
+		error = fgets(input,sizeof(input),stdin);
+		if (input[strlen(input) - 1] == '\n') {
+			input[strlen(input) - 1] = '\0';
+		}
+		printf("hfks: %s\n", input);
+		nullify(input, 128);
+		printf("hfks: %s\n", input);
+		write(socket, input, sizeof(input));
+		read(socket, input, sizeof(input));
+		pasSuccess = atoi(input);
+		if (pasSuccess == 0) {
+			printf("Incorrect Password!!!\n");
+		}
+	}
+	printf("We did it; We did it; Hooray!!!!!!\n");
 	return 1;
 }
 
