@@ -1,3 +1,18 @@
+Ciscolendar
+Group members: Avery Karlin, Matthew Lerner-Brecher, Haoran Xiao
+
+How to compile
+//instructions
+
+List of files
+	//more files
+	calendar.h
+	calendar.c
+
+Using ciscolendar
+	
+
+///////////////////
 Make a process(char* user, char* command) - Takes a command, does whatever a calendar does
 
 On server: ~/.data/user
