@@ -27,7 +27,6 @@ int sock(char* ipadd) {
 	serv.sin_family = AF_INET;
 	serv.sin_port = htons(1701);
 	inet_aton(ipadd, &(serv.sin_addr));
-	printf("test2\n");
 	i = connect(id, (struct sockaddr*) &serv, sizeof(serv));
 	printf("<client> connect returned: %d\n", i);
 	error(i);
@@ -135,7 +134,6 @@ int login(int socket) {
 		printf("What is your username: ");
 		fflush(stdin);
 		error = fgets(input,sizeof(input),stdin);
-		printf("username: %s\n", input);
 		if (input[strlen(input) - 1] == '\n') {
 			input[strlen(input) - 1] = '\0';
 		}
@@ -154,9 +152,7 @@ int login(int socket) {
 		if (input[strlen(input) - 1] == '\n') {
 			input[strlen(input) - 1] = '\0';
 		}
-		printf("hfks: %s\n", input);
 		nullify(input, 128);
-		printf("hfks: %s\n", input);
 		write(socket, input, sizeof(input));
 		read(socket, input, sizeof(input));
 		pasSuccess = atoi(input);
@@ -183,6 +179,7 @@ int login(int socket) {
 		int datfil = open("event.dat", O_RDONLY, 0744);
 		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
+		printf("%s\n", textFil);
 		write(socket, textFil, sizeof(textFil));
 	}
 	close(fil);
@@ -215,9 +212,7 @@ int main() {
 			printf("Please enter the IP Address of the server you would like to connect to: ");
 			fflush(stdin);
 			error = fgets(temp,sizeof(temp),stdin);
-			printf("Test1\n");
 			socket = sock(temp);
-			printf("Test1\n");
 		}		
 		while (!success) { //While the user is not logged in
 			printf("Please enter whether you would like to login or signup: ");
@@ -245,7 +240,7 @@ int main() {
 		runcal();
 		int timeFil = open("timestamp", O_TRUNC | O_CREAT | O_WRONLY, 0744);
 		time_t now = time(NULL);
-		char nows[DTS];
+		char nows[DTS]; 
 		sprintf(nows, "%li", (long) now);
 		nullify(nows, DTS);
 		int test = write(timeFil, nows, sizeof(nows));

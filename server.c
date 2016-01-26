@@ -30,7 +30,6 @@ int sock() {
 	listen(id, 1);
 	int parent = fork();
 	if(!parent) { 
-		printf("test5\n"); 
 		int client = accept(id, NULL, NULL);
 		printf("<server> connected\n");
 		from = open("parpause", O_WRONLY);
