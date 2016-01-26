@@ -133,7 +133,6 @@ int login(int socket) {
 		sprintf(buffer, "0");
 		write(socket, buffer, sizeof(buffer));
 		read(socket, textFil, sizeof(textFil));
-		printf("%s\n", textFil);
 		datfil = open(username, O_WRONLY | O_TRUNC | O_CREAT, 0744);
 		nullify(textFil, 65535);
 		write(datfil, textFil, sizeof(textFil));

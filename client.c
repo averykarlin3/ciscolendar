@@ -171,15 +171,11 @@ int login(int socket) {
 		read(socket, textFil, sizeof(textFil));
 		nullify(textFil, 65535);
 		datfil = open("event.dat", O_WRONLY | O_TRUNC | O_CREAT, 0744);
-		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
 	}
 	else {		
-		printf("<C> - here\n");
 		int datfil = open("event.dat", O_RDONLY, 0744);
-		printf("%i\n", datfil);
 		write(datfil, textFil, sizeof(textFil));
-		printf("%s\n", textFil);
 		write(socket, textFil, sizeof(textFil));
 	}
 	close(fil);
